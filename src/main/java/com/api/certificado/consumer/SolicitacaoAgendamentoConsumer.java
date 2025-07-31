@@ -23,7 +23,6 @@ public class SolicitacaoAgendamentoConsumer {
     @RabbitListener(queues = "${broker.queue.solicitacao.agendamento.name}")
     public void receiveMessage(SolicitacaoAgendamentoMenssaging request) {
         try {
-            Thread.sleep(5000); 
 
             System.out.println("Processando solicitação de agendamento: " + request);
 

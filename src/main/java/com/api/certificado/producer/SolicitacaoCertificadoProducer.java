@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.api.certificado.domain.solicitacaoCertificado.MessagePublisher;
+import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
 
 
@@ -18,12 +18,7 @@ public class SolicitacaoCertificadoProducer implements MessagePublisher<Solicita
     private String queueName;
 
     public void publish(SolicitacaoCertificadoMenssaging request) {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
+        
         System.out.println("Enviando mensagem de solicitação de certificado: " + request);
 
         rabbitTemplate.convertAndSend(queueName, request);

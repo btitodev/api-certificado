@@ -28,8 +28,7 @@ public class SolicitacaoCertificadoConsumer {
     @RabbitListener(queues = "${broker.queue.solicitacao.certificado.name}")
     public void receiveMessage(SolicitacaoCertificadoMenssaging request) {
         try {
-            Thread.sleep(5000);
-
+            
             System.out.println("Processando solicitação de certificado: " + request);
 
             solicitacaoCertificadoService.updateStatus(request.id(), StatusSolicitacaoCertificado.PROCESSANDO);

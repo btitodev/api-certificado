@@ -17,12 +17,6 @@ public class SolicitacaoBoletoProducer {
     private String queueName;
 
     public void publishMessageSolicitacaoBoleto(SolicitacaoBoletoMenssaging request) {
-        // aguardar 5 segundos antes de enviar a mensagem
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
 
         System.out.println("Enviando mensagem de boleto: " + request);
 

@@ -22,7 +22,6 @@ public class BoletoEmitidoConsumer {
     @RabbitListener(queues = "${broker.queue.boleto.emitido.name}")
     public void receiveMessage(BoletoEmitidoMenssaging message) {
         try {
-            Thread.sleep(5000); // Simula um atraso no processamento
 
             System.out.println("Processando mensagem de boleto emitido: " + message);
 

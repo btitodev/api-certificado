@@ -17,11 +17,6 @@ public class SolicitacaoAgendamentoProducer {
     private String queueName;
 
     public void publishMessageSolicitacaoAgendamento(SolicitacaoAgendamentoMenssaging request) {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
 
         System.out.println("Enviando mensagem de agendamento: " + request);
 

@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.api.certificado.domain.solicitacaoCertificado.MessagePublisher;
+import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
 import com.api.certificado.dto.SolicitacaoCertificadoRequestDTO;
@@ -27,6 +27,7 @@ public class SolicitacaoCertificadoService {
 
         @Transactional
         public SolicitacaoCertificadoResponseDTO create(SolicitacaoCertificadoRequestDTO request) {
+                
                 var newSolicitacaoCertificado = new SolicitacaoCertificado(request);
 
                 repository.save(newSolicitacaoCertificado);
