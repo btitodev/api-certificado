@@ -13,14 +13,9 @@ public class CertificadoApplication {
 			SpringApplication.run(CertificadoApplication.class, args);
 			System.out.println("Aplicação iniciada com sucesso ");
 		} catch (Exception e) {
-			//ignorar SilentExitExceptionHandler
-			if (e.getMessage() != null && e.getMessage().contains("SilentExitExceptionHandler")) {
-			} else {
-				// Logar a exceção completa
-				System.err.println("Erro ao iniciar a aplicação: " + e.getMessage());
-			}
+			System.out.println("Erro ao iniciar a aplicação");
+			e.printStackTrace();
 		}
 
 	}
-
 }
