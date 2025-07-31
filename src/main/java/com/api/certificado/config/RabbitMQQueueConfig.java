@@ -25,7 +25,7 @@ public class RabbitMQQueueConfig {
     private String agendamentoQueue;
 
     // Filas DLQ
-    @Value("${broker.queue.solicitacao.dlq.name}")
+    @Value("${broker.queue.solicitacao.certificado.dlq.name}")
     private String certificadoDlqQueue;
 
     @Value("${broker.queue.solicitacao.boleto.dlq.name}")

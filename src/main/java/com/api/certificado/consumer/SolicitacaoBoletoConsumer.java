@@ -30,15 +30,13 @@ public class SolicitacaoBoletoConsumer {
             var boletoRequest = new BoletoRequestDTO(
                     request.nome(),
                     request.email(),
-                    request.idSolicitacao()
-            );
+                    request.idSolicitacao());
 
             var boletoResponse = rPaymentApiClient.createBoleto(boletoRequest);
 
             solicitacaoCertificadoService.updateStatus(
-                    request.idSolicitacao(), 
-                    StatusSolicitacaoCertificado.BOLETO_EMITIDO
-            );
+                    request.idSolicitacao(),
+                    StatusSolicitacaoCertificado.BOLETO_EMITIDO);
 
         } catch (Exception e) {
             throw new AmqpRejectAndDontRequeueException("Erro ao processar a solicitação de boleto", e);

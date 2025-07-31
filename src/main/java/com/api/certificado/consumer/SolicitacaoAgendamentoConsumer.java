@@ -40,7 +40,6 @@ public class SolicitacaoAgendamentoConsumer {
             );
 
         } catch (Exception e) {
-            // Lança a exceção para impedir reprocessamento e direcionar à DLQ
             throw new AmqpRejectAndDontRequeueException("Erro ao processar a mensagem", e);
         }
     }
