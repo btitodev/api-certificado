@@ -1,4 +1,4 @@
-package com.api.certificado.domain.solicitacaoCertificado;
+package com.api.certificado.domain;
 
 public interface MessagePublisher<T> {
     void publish(T message);
