@@ -24,7 +24,7 @@ public class SolicitacaoCertificadoConsumer {
     @Autowired
     private SolicitacaoBoletoProducer solicitacaoBoletoProducer;
 
-    @RabbitListener(queues = "${broker.queue.solicitacao.name}")
+    @RabbitListener(queues = "${broker.queue.solicitacao.certificado.name}")
     public void receiveMessage(SolicitacaoCertificadoMenssaging request) {
         try {
             Thread.sleep(5000);

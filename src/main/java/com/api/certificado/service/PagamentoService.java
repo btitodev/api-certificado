@@ -18,7 +18,6 @@ public class PagamentoService {
 
         System.out.println("Confirmando pagamento para a solicitação: " + idSolicitacao);
         solicitacaoCertificadoService.updateStatus(idSolicitacao, StatusSolicitacaoCertificado.BOLETO_PAGO);
-
         System.out.println("Pagamento confirmado para a solicitação: " + idSolicitacao);
     }
 

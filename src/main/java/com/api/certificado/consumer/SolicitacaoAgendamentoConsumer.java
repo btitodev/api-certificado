@@ -1,5 +1,6 @@
 package com.api.certificado.consumer;
 
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,20 +23,25 @@ public class SolicitacaoAgendamentoConsumer {
     @RabbitListener(queues = "${broker.queue.solicitacao.agendamento.name}")
     public void receiveMessage(SolicitacaoAgendamentoMenssaging request) {
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            Thread.sleep(5000); 
+
+            System.out.println("Processando solicitação de agendamento: " + request);
+
+            AgendamentoRequestDTO agendamentoRequestDTO = new AgendamentoRequestDTO(
+                    request.nome(),
+                    request.email(),
+                    request.idSolicitacao());
+
+            validApiClient.createAgendamento(agendamentoRequestDTO);
+
+            solicitacaoCertificadoService.updateStatus(
+                    request.idSolicitacao(), 
+                    StatusSolicitacaoCertificado.APROVADO
+            );
+
+        } catch (Exception e) {
+            // Lança a exceção para impedir reprocessamento e direcionar à DLQ
+            throw new AmqpRejectAndDontRequeueException("Erro ao processar a mensagem", e);
         }
-
-        System.out.println("Processando solicitação de agendamento: " + request);
-
-        AgendamentoRequestDTO agendamentoRequestDTO = new AgendamentoRequestDTO(
-                request.nome(),
-                request.email(),
-                request.idSolicitacao());
-
-        validApiClient.createAgendamento(agendamentoRequestDTO);
-
-        solicitacaoCertificadoService.updateStatus(request.idSolicitacao(), StatusSolicitacaoCertificado.APROVADO);
     }
 }

@@ -3,6 +3,8 @@ package com.api.certificado.controller;
 import java.net.URI;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,9 +27,13 @@ public class SolicitacaoCertificadoController {
     @Autowired
     private SolicitacaoCertificadoService service;
 
+    //private static final Logger logger = LoggerFactory.getLogger(SolicitacaoCertificadoController.class);
+
+
     @PostMapping
     public ResponseEntity<SolicitacaoCertificadoResponseDTO> create(
             @RequestBody @Valid SolicitacaoCertificadoRequestDTO request) {
+        //logger.info("Recebendo solicitação de certificado: {}", request);
         SolicitacaoCertificadoResponseDTO response = service.create(request);
         URI location = URI.create("/solicitacao-certificado/" + response.id());
         return ResponseEntity.created(location).body(response);

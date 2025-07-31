@@ -3,17 +3,17 @@ package com.api.certificado.producer;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
 
-@Component
-public class SolicitacaoCertificadoProducer {
 
+@Service
+public class SolicitacaoCertificadoProducer {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Value("${broker.queue.solicitacao.name}")
+    @Value("${broker.queue.solicitacao.certificado.name}")
     private String queueName;
 
     public void publishMessageSolicitacaocertificado(SolicitacaoCertificadoMenssaging request) {
