@@ -5,18 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.api.certificado.domain.solicitacaoCertificado.MessagePublisher;
 import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
 
 
 @Service
-public class SolicitacaoCertificadoProducer {
+public class SolicitacaoCertificadoProducer implements MessagePublisher<SolicitacaoCertificadoMenssaging> {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
     @Value("${broker.queue.solicitacao.certificado.name}")
     private String queueName;
 
-    public void publishMessageSolicitacaocertificado(SolicitacaoCertificadoMenssaging request) {
+    public void publish(SolicitacaoCertificadoMenssaging request) {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
