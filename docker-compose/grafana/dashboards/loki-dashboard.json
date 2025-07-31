@@ -1,0 +1,26 @@
+{
+  "id": null,
+  "uid": "loki-basic",
+  "title": "Logs - Loki",
+  "timezone": "browser",
+  "schemaVersion": 16,
+  "version": 1,
+  "panels": [
+    {
+      "type": "logs",
+      "title": "Loki Logs",
+      "targets": [
+        {
+          "expr": "{job=\"grafana\"}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ]
+}
