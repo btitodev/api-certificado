@@ -27,6 +27,8 @@ public class SolicitacaoBoletoConsumer {
             Thread.currentThread().interrupt();
         }
 
+        System.out.println("Processando solicitação de boleto: " + request);
+
         var boletoRequest = new BoletoRequestDTO(request.nome(), request.email(), request.idSolicitacao());
         var boletoResponse = rPaymentApiClient.createBoleto(boletoRequest);
         solicitacaoCertificadoService.updateStatus(request.idSolicitacao(), StatusSolicitacaoCertificado.BOLETO_EMITIDO);

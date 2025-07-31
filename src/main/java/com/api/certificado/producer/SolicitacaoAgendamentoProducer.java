@@ -5,28 +5,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
+import com.api.certificado.menssaging.SolicitacaoAgendamentoMenssaging;
 
 @Service
-public class SolicitacaoBoletoProducer {
+public class SolicitacaoAgendamentoProducer {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Value("${broker.queue.solicitacao.boleto.name}")
+    @Value("${broker.queue.solicitacao.agendamento.name}")
     private String queueName;
 
-    public void publishMessageSolicitacaoBoleto(SolicitacaoBoletoMenssaging request) {
-        // aguardar 5 segundos antes de enviar a mensagem
+    public void publishMessageSolicitacaoAgendamento(SolicitacaoAgendamentoMenssaging request) {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
-        System.out.println("Enviando mensagem de boleto: " + request);
+        System.out.println("Enviando mensagem de agendamento: " + request);
 
         rabbitTemplate.convertAndSend(queueName, request);
-
     }
 }

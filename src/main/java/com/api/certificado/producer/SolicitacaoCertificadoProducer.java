@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
 
-@Component 
+@Component
 public class SolicitacaoCertificadoProducer {
 
     @Autowired
@@ -17,6 +17,14 @@ public class SolicitacaoCertificadoProducer {
     private String queueName;
 
     public void publishMessageSolicitacaocertificado(SolicitacaoCertificadoMenssaging request) {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        System.out.println("Enviando mensagem de solicitação de certificado: " + request);
+
         rabbitTemplate.convertAndSend(queueName, request);
     }
 }

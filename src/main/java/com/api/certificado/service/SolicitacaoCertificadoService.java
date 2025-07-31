@@ -55,6 +55,14 @@ public class SolicitacaoCertificadoService {
         repository.save(solicitacao);
     }
 
+    public void addTicketNumber(UUID id, String ticket) {
+        var solicitacao = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
+
+        solicitacao.setTicket(ticket);
+        repository.save(solicitacao);
+    }
+
     public  SolicitacaoCertificadoResponseDTO getById(UUID id) {
         var solicitacao = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));

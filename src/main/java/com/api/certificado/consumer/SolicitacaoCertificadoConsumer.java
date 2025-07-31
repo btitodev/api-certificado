@@ -32,15 +32,26 @@ public class SolicitacaoCertificadoConsumer {
             Thread.currentThread().interrupt();
         }
 
+
+        System.out.println("Processando solicitação de certificado: " + request);
+
         solicitacaoCertificadoService.updateStatus(request.id(), StatusSolicitacaoCertificado.PROCESSANDO);
 
         var pedidoCompraRequestDTO = new PedidoCompraRequestDTO(request.nome(), request.email());
 
         var pedidoResponse = validApiClient.createPedidoCompra(pedidoCompraRequestDTO);
 
+        solicitacaoCertificadoService.addTicketNumber(request.id(), pedidoResponse.ticket());
+
         solicitacaoCertificadoService.updateStatus(request.id(), StatusSolicitacaoCertificado.APROVADO);
 
-        solicitacaoBoletoProducer.publishMessageSolicitacaoBoleto(new SolicitacaoBoletoMenssaging(request.nome(), request.email(), request.id()));
+        var solicitacaoBoletoMenssaging = new SolicitacaoBoletoMenssaging(
+            request.nome(),
+            request.email(),
+            request.id()
+        );
+
+        solicitacaoBoletoProducer.publishMessageSolicitacaoBoleto(solicitacaoBoletoMenssaging);
     }
 
 }

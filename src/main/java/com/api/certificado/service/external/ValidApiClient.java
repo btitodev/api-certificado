@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.api.certificado.dto.AgendamentoRequestDTO;
+import com.api.certificado.dto.AgendamentoResponseDTO;
 import com.api.certificado.dto.PedidoCompraRequestDTO;
 import com.api.certificado.dto.PedidoCompraResponseDTO;
 
@@ -31,5 +33,28 @@ public class ValidApiClient {
         //         .block();
 
         // return pedidoCompraResponse;
+    }
+
+    public AgendamentoResponseDTO createAgendamento(AgendamentoRequestDTO agendamentoRequestDTO) {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        // Mock response
+        return new AgendamentoResponseDTO(
+                agendamentoRequestDTO.nome(),
+                agendamentoRequestDTO.email(),
+                agendamentoRequestDTO.idSolicitacao()
+        );
+
+        // var agendamentoResponse = webClient.post()
+        //         .uri("https://api.valid.com.br/api/agendamentos")
+        //         .bodyValue(agendamentoRequestDTO)
+        //         .retrieve()
+        //         .bodyToMono(AgendamentoResponseDTO.class)
+        //         .block();
+
     }
 }
