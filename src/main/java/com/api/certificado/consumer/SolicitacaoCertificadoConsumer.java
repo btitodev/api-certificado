@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
 import com.api.certificado.dto.PedidoCompraRequestDTO;
+import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
 import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
+import com.api.certificado.producer.SolicitacaoBoletoProducer;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 import com.api.certificado.service.external.ValidApiClient;
 
@@ -18,6 +20,9 @@ public class SolicitacaoCertificadoConsumer {
 
     @Autowired
     private ValidApiClient validApiClient;
+
+    @Autowired
+    private SolicitacaoBoletoProducer solicitacaoBoletoProducer;
 
     @RabbitListener(queues = "${broker.queue.solicitacao.name}")
     public void receiveMessage(SolicitacaoCertificadoMenssaging request) {
@@ -34,6 +39,8 @@ public class SolicitacaoCertificadoConsumer {
         var pedidoResponse = validApiClient.createPedidoCompra(pedidoCompraRequestDTO);
 
         solicitacaoCertificadoService.updateStatus(request.id(), StatusSolicitacaoCertificado.APROVADO);
+
+        solicitacaoBoletoProducer.publishMessageSolicitacaoBoleto(new SolicitacaoBoletoMenssaging(request.nome(), request.email(), request.id()));
     }
 
 }

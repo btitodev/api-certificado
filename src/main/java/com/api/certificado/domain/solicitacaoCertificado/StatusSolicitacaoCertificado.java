@@ -5,7 +5,10 @@ public enum StatusSolicitacaoCertificado {
     APROVADO("Aprovado"),
     REJEITADO("Rejeitado"),
     PROCESSANDO("Processando"),
-    FALHA("Falha");
+    FALHA("Falha"),
+    PEDIDO_COMPRA_SOLICITADO("Pedido de Compra Solicitado"),
+    BOLETO_EMITIDO("Boleto Emitido"),
+    BOLETO_SOLICITADO("Boleto Solicitado");
 
     private final String descricao;
 
