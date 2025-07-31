@@ -1,6 +1,8 @@
 package com.api.certificado.domain.solicitacaoCertificado;
 
-public record SolicitacaoCertificadoRequestDTO(String nome, String email) {
+public record SolicitacaoCertificadoRequestDTO(
+        String nome,
+        String email) {
 
     public SolicitacaoCertificadoRequestDTO {
         if (nome == null || nome.isBlank()) {
@@ -10,6 +12,5 @@ public record SolicitacaoCertificadoRequestDTO(String nome, String email) {
             throw new IllegalArgumentException("Email não pode ser vazio");
         }
     }
-
 
 }

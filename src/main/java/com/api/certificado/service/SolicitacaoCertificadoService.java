@@ -17,15 +17,15 @@ public class SolicitacaoCertificadoService {
 
     public SolicitacaoCertificadoResponseDTO create(SolicitacaoCertificadoRequestDTO request) {
         var newSolicitacaoCertificado = new SolicitacaoCertificado(request);
-        
+
         repository.save(newSolicitacaoCertificado);
 
         return new SolicitacaoCertificadoResponseDTO(
                 newSolicitacaoCertificado.getId(),
                 newSolicitacaoCertificado.getNome(),
                 newSolicitacaoCertificado.getEmail(),
-                newSolicitacaoCertificado.getDataSolicitacao());
-
+                newSolicitacaoCertificado.getDataSolicitacao(),
+                newSolicitacaoCertificado.getStatus());
     }
 
 }
