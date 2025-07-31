@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQQueueConfig {
 
-      // Filas principais
+    // Filas principais
     @Value("${broker.queue.solicitacao.certificado.name}")
     private String certificadoQueue;
 
@@ -44,7 +44,7 @@ public class RabbitMQQueueConfig {
     @Value("${broker.exchange.dlq.agendamento}")
     private String agendamentoDlx;
 
-   // ==================== Fila principal: CERTIFICADO ====================
+    // ==================== Fila principal: CERTIFICADO ====================
     @Bean
     public Queue certificadoQueue() {
         Map<String, Object> args = new HashMap<>();
@@ -120,6 +120,34 @@ public class RabbitMQQueueConfig {
         return BindingBuilder.bind(agendamentoDlq())
                 .to(agendamentoDlxExchange())
                 .with(agendamentoDlqQueue);
+    }
+
+    // ==================== Fila principal: BOLETO EMITIDO ====================
+    @Value("${broker.queue.boleto.emitido.name}")
+    private String boletoEmitidoQueue;
+
+    @Value("${broker.queue.boleto.emitido.dlq.name}")
+    private String boletoEmitidoDlqQueue;
+
+    // Reutilizando a mesma exchange DLX do boleto
+    @Bean
+    public Queue boletoEmitidoQueue() {
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-dead-letter-exchange", boletoDlx);
+        args.put("x-dead-letter-routing-key", boletoEmitidoDlqQueue);
+        return new Queue(boletoEmitidoQueue, true, false, false, args);
+    }
+
+    @Bean
+    public Queue boletoEmitidoDlq() {
+        return new Queue(boletoEmitidoDlqQueue, true);
+    }
+
+    @Bean
+    public Binding boletoEmitidoDlqBinding() {
+        return BindingBuilder.bind(boletoEmitidoDlq())
+                .to(boletoDlxExchange())
+                .with(boletoEmitidoDlqQueue);
     }
 
 }

@@ -9,7 +9,8 @@ public enum StatusSolicitacaoCertificado {
     PEDIDO_COMPRA_SOLICITADO("Pedido de Compra Solicitado"),
     BOLETO_EMITIDO("Boleto Emitido"),
     BOLETO_SOLICITADO("Boleto Solicitado"),
-    BOLETO_PAGO("Boleto Pago");
+    BOLETO_PAGO("Boleto Pago"),
+    BOLETO_ENVIADO("Boleto Enviado");
 
     private final String descricao;
 
