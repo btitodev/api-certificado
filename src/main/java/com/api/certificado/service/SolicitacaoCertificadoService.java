@@ -43,7 +43,8 @@ public class SolicitacaoCertificadoService {
                 newSolicitacaoCertificado.getNome(),
                 newSolicitacaoCertificado.getEmail(),
                 newSolicitacaoCertificado.getDataSolicitacao(),
-                newSolicitacaoCertificado.getStatus());
+                newSolicitacaoCertificado.getStatus(),
+                newSolicitacaoCertificado.getTicket());
     }
 
     public void updateStatus(UUID id, StatusSolicitacaoCertificado status) {
@@ -63,7 +64,8 @@ public class SolicitacaoCertificadoService {
                 solicitacao.getNome(),
                 solicitacao.getEmail(),
                 solicitacao.getDataSolicitacao(),
-                solicitacao.getStatus());
+                solicitacao.getStatus(),
+                solicitacao.getTicket());
     }
 
 }

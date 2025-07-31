@@ -31,6 +31,7 @@ public class SolicitacaoCertificado {
     private String nome;
     private String email;
     private LocalDateTime dataSolicitacao;
+    private String ticket;
 
     @Enumerated(EnumType.STRING)
     private StatusSolicitacaoCertificado status;
@@ -39,7 +40,7 @@ public class SolicitacaoCertificado {
         this.nome = request.nome();
         this.email = request.email();
         this.dataSolicitacao = LocalDateTime.now();
-        this.status = StatusSolicitacaoCertificado.PENDENTE;
+        this.status = StatusSolicitacaoCertificado.PENDENTE;        
     }
 
 }
