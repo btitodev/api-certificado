@@ -1,11 +1,11 @@
-package com.api.certificado.produces;
+package com.api.certificado.producer;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificadoRequestDTO;
+import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
 
 @Component 
 public class SolicitacaoCertificadoProducer {
@@ -16,7 +16,7 @@ public class SolicitacaoCertificadoProducer {
     @Value("${broker.queue.solicitacao.name}")
     private String queueName;
 
-    public void publishMessageSolicitacaocertificado(SolicitacaoCertificadoRequestDTO request) {
+    public void publishMessageSolicitacaocertificado(SolicitacaoCertificadoMenssaging request) {
         rabbitTemplate.convertAndSend(queueName, request);
     }
 }

@@ -3,7 +3,9 @@ package com.api.certificado.domain.solicitacaoCertificado;
 public enum StatusSolicitacaoCertificado {
     PENDENTE("Pendente"),
     APROVADO("Aprovado"),
-    REJEITADO("Rejeitado");
+    REJEITADO("Rejeitado"),
+    PROCESSANDO("Processando"),
+    FALHA("Falha");
 
     private final String descricao;
 

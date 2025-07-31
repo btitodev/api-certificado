@@ -1,4 +1,4 @@
-package com.api.certificado.domain.solicitacaoCertificado;
+package com.api.certificado.dto;
 
 public record SolicitacaoCertificadoRequestDTO(
         String nome,

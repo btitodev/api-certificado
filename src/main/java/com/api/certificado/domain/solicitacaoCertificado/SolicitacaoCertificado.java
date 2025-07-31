@@ -3,6 +3,8 @@ package com.api.certificado.domain.solicitacaoCertificado;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.api.certificado.dto.SolicitacaoCertificadoRequestDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
