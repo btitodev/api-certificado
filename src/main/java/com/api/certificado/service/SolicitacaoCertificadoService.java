@@ -31,10 +31,14 @@ public class SolicitacaoCertificadoService {
 
         @Transactional
         public UUID create(SolicitacaoCertificadoRequestDTO request) {
-                var solicitacao = new SolicitacaoCertificado(request);
-                repository.save(solicitacao);
-                entityManager.flush();
-                return solicitacao.getId();
+                try {
+                        var solicitacao = new SolicitacaoCertificado(request);
+                        repository.save(solicitacao);
+                        entityManager.flush();
+                        return solicitacao.getId();
+                } catch (Exception ex) {
+                        throw new RuntimeException("Falha ao salvar a solicitação", ex);
+                }
         }
 
         public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoRequestDTO request) {
@@ -46,35 +50,47 @@ public class SolicitacaoCertificadoService {
 
                 sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
                 updateStatus(request.idSolicitacao(),
-                            StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
+                                StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
         }
 
+        @Transactional
         public void updateStatus(UUID id, StatusSolicitacaoCertificado status) {
-                var solicitacao = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
-
-                solicitacao.setStatus(status);
-                repository.save(solicitacao);
+                try {
+                        var solicitacao = repository.findById(id)
+                                        .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
+                        solicitacao.setStatus(status);
+                        repository.save(solicitacao);
+                } catch (Exception ex) {
+                        throw new RuntimeException("Erro ao atualizar o status da solicitação", ex);
+                }
         }
 
+        @Transactional
         public void addTicketNumber(UUID id, String ticket) {
-                var solicitacao = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
-
-                solicitacao.setTicket(ticket);
-                repository.save(solicitacao);
+                try {
+                        var solicitacao = repository.findById(id)
+                                        .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
+                        solicitacao.setTicket(ticket);
+                        repository.save(solicitacao);
+                } catch (Exception ex) {
+                        throw new RuntimeException("Erro ao adicionar número do ticket", ex);
+                }
         }
 
         public SolicitacaoCertificadoResponseDTO getById(UUID id) {
-                var solicitacao = repository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
+                try {
+                        var solicitacao = repository.findById(id)
+                                        .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
 
-                return new SolicitacaoCertificadoResponseDTO(
-                                solicitacao.getId(),
-                                solicitacao.getNome(),
-                                solicitacao.getEmail(),
-                                solicitacao.getDataSolicitacao(),
-                                solicitacao.getStatus());
+                        return new SolicitacaoCertificadoResponseDTO(
+                                        solicitacao.getId(),
+                                        solicitacao.getNome(),
+                                        solicitacao.getEmail(),
+                                        solicitacao.getDataSolicitacao(),
+                                        solicitacao.getStatus());
+                } catch (Exception ex) {
+                        throw new RuntimeException("Erro ao buscar solicitação por ID", ex);
+                }
         }
 
 }

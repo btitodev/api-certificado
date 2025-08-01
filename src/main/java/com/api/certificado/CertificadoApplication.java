@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import com.api.certificado.controller.SolicitacaoCertificadoController;
 
 @SpringBootApplication
-@EnableAsync
 public class CertificadoApplication {
 
 	private static final Logger logger = LoggerFactory.getLogger(SolicitacaoCertificadoController.class);

@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.menssaging.SolicitacaoAgendamentoMenssaging;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SolicitacaoAgendamentoProducer {
+public class SolicitacaoAgendamentoProducer implements MessagePublisher<SolicitacaoAgendamentoMenssaging> {
 
     private final RabbitTemplate rabbitTemplate;
     

@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
 import com.api.certificado.dto.PedidoCompraRequestDTO;
 import com.api.certificado.dto.PedidoCompraResponseDTO;
 import com.api.certificado.menssaging.BoletoEmitidoMenssaging;
 import com.api.certificado.menssaging.SolicitacaoAgendamentoMenssaging;
-import com.api.certificado.producer.SolicitacaoAgendamentoProducer;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 import com.api.certificado.service.external.ValidApiClient;
 
@@ -20,7 +20,7 @@ import com.api.certificado.service.external.ValidApiClient;
 @RequiredArgsConstructor
 public class BoletoPagoConsumer {
 
-    private final SolicitacaoAgendamentoProducer solicitacaoAgendamentoProducer;
+    private final MessagePublisher<SolicitacaoAgendamentoMenssaging> solicitacaoAgendamentoProducer;
     private final ValidApiClient validApiClient;
     private final SolicitacaoCertificadoService solicitacaoCertificadoService;
 
