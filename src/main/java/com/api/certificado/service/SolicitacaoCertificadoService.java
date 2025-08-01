@@ -41,7 +41,7 @@ public class SolicitacaoCertificadoService {
                 }
         }
 
-        public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoRequestDTO request) {
+        public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoRequestDTO request, UUID id) {
 
                 var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
                                 request.nome(),
@@ -49,7 +49,7 @@ public class SolicitacaoCertificadoService {
                                 request.idSolicitacao());
 
                 sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
-                updateStatus(request.idSolicitacao(),
+                updateStatus(id,
                                 StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
         }
 

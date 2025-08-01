@@ -31,8 +31,8 @@ public class SolicitacaoCertificadoController {
     public ResponseEntity<SolicitacaoCertificadoResponseDTO> create(
             @RequestBody @Valid SolicitacaoCertificadoRequestDTO request) {
         var id = service.create(request);
-        service.sendMessagingSolicitacaoBoleto(request);
         SolicitacaoCertificadoResponseDTO response = service.getById(id);
+        service.sendMessagingSolicitacaoBoleto(request, id);
         URI location = URI.create("/solicitacao-certificado/" + response.id());
         return ResponseEntity.created(location).body(response);
     }
