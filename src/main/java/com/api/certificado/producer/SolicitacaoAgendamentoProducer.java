@@ -16,7 +16,7 @@ public class SolicitacaoAgendamentoProducer {
     @Value("${broker.queue.solicitacao.agendamento.name}")
     private String queueName;
 
-    public void publishMessageSolicitacaoAgendamento(SolicitacaoAgendamentoMenssaging request) {
+    public void publish(SolicitacaoAgendamentoMenssaging request) {
 
         System.out.println("Enviando mensagem de agendamento: " + request);
 

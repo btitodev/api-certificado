@@ -24,6 +24,12 @@ public class RabbitMQQueueConfig {
     @Value("${broker.queue.solicitacao.agendamento.name}")
     private String agendamentoQueue;
 
+    @Value("${broker.queue.boleto.emitido.name}")
+    private String boletoEmitidoQueue;
+
+    @Value("${broker.queue.boleto.pago.name}")
+    private String boletoPagoQueue;
+
     // Filas DLQ
     @Value("${broker.queue.solicitacao.certificado.dlq.name}")
     private String certificadoDlqQueue;
@@ -33,6 +39,12 @@ public class RabbitMQQueueConfig {
 
     @Value("${broker.queue.solicitacao.agendamento.dlq.name}")
     private String agendamentoDlqQueue;
+
+    @Value("${broker.queue.boleto.emitido.dlq.name}")
+    private String boletoEmitidoDlqQueue;
+
+    @Value("${broker.queue.boleto.pago.dlq.name}")
+    private String boletoPagoDlqQueue;
 
     // Exchanges DLQ centralizadas
     @Value("${broker.exchange.dlq.certificado}")
@@ -85,11 +97,6 @@ public class RabbitMQQueueConfig {
     }
 
     @Bean
-    public DirectExchange boletoDlxExchange() {
-        return new DirectExchange(boletoDlx);
-    }
-
-    @Bean
     public Binding boletoDlqBinding() {
         return BindingBuilder.bind(boletoDlq())
                 .to(boletoDlxExchange())
@@ -123,13 +130,7 @@ public class RabbitMQQueueConfig {
     }
 
     // ==================== Fila principal: BOLETO EMITIDO ====================
-    @Value("${broker.queue.boleto.emitido.name}")
-    private String boletoEmitidoQueue;
 
-    @Value("${broker.queue.boleto.emitido.dlq.name}")
-    private String boletoEmitidoDlqQueue;
-
-    // Reutilizando a mesma exchange DLX do boleto
     @Bean
     public Queue boletoEmitidoQueue() {
         Map<String, Object> args = new HashMap<>();
@@ -144,10 +145,37 @@ public class RabbitMQQueueConfig {
     }
 
     @Bean
+    public DirectExchange boletoDlxExchange() {
+        return new DirectExchange(boletoDlx);
+    }
+
+    @Bean
     public Binding boletoEmitidoDlqBinding() {
         return BindingBuilder.bind(boletoEmitidoDlq())
                 .to(boletoDlxExchange())
                 .with(boletoEmitidoDlqQueue);
+    }
+
+    // ==================== Fila principal: BOLETO PAGO ====================
+
+    @Bean
+    public Queue boletoPagoQueue() {
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-dead-letter-exchange", boletoDlx);
+        args.put("x-dead-letter-routing-key", boletoPagoDlqQueue);
+        return new Queue(boletoPagoQueue, true, false, false, args);
+    }
+
+    @Bean
+    public Queue boletoPagoDlq() {
+        return new Queue(boletoPagoDlqQueue, true);
+    }
+
+    @Bean
+    public Binding boletoPagoDlqBinding() {
+        return BindingBuilder.bind(boletoPagoDlq())
+                .to(boletoDlxExchange())
+                .with(boletoPagoDlqQueue);
     }
 
 }
