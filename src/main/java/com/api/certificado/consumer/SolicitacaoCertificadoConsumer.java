@@ -71,6 +71,7 @@ public class SolicitacaoCertificadoConsumer {
             request.email(),
             request.id()
         );
-        solicitacaoBoletoProducer.publishMessageSolicitacaoBoleto(nextMessage);
+        
+        solicitacaoBoletoProducer.publish(nextMessage);
     }
 }

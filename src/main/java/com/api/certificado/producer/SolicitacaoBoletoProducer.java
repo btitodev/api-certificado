@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SolicitacaoBoletoProducer {
+public class SolicitacaoBoletoProducer implements MessagePublisher<SolicitacaoBoletoMenssaging> {
 
     private final RabbitTemplate rabbitTemplate;
     
@@ -20,12 +21,13 @@ public class SolicitacaoBoletoProducer {
     private String queueName;
 
     @Async
-    public void publishMessageSolicitacaoBoleto(SolicitacaoBoletoMenssaging request) {
+    @Override
+    public void publish(SolicitacaoBoletoMenssaging request) {
         try {
             log.info("Enviando solicitação de boleto para o cliente: {}, ID: {}", 
                     request.nome(), request.idSolicitacao());
             
-            sendMessageToQueue(request);
+            publishNextMessage(request);
             
             log.debug("Solicitação de boleto enviada com sucesso para ID: {}", 
                     request.idSolicitacao());
@@ -36,7 +38,7 @@ public class SolicitacaoBoletoProducer {
         }
     }
 
-    private void sendMessageToQueue(SolicitacaoBoletoMenssaging request) {
+    private void publishNextMessage(SolicitacaoBoletoMenssaging request) {
         rabbitTemplate.convertAndSend(queueName, request);
     }
 }

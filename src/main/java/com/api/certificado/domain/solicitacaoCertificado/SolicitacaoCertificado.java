@@ -40,7 +40,7 @@ public class SolicitacaoCertificado {
         this.nome = request.nome();
         this.email = request.email();
         this.dataSolicitacao = LocalDateTime.now();     
-        this.status = StatusSolicitacaoCertificado.RECEBIDA;
+        this.status = StatusSolicitacaoCertificado.SOLICITACAO_EMITIDA;
     }
 
 }

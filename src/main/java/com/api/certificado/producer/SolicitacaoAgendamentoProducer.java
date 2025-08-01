@@ -24,7 +24,7 @@ public class SolicitacaoAgendamentoProducer {
         try {
             log.info("Enviando mensagem de agendamento para solicitação ID: {}", request.idSolicitacao());
             
-            sendMessageToQueue(request);
+            publishNextMessage(request);
             
             log.debug("Mensagem de agendamento enviada com sucesso para ID: {}", request.idSolicitacao());
         } catch (Exception ex) {
@@ -33,7 +33,7 @@ public class SolicitacaoAgendamentoProducer {
         }
     }
 
-    private void sendMessageToQueue(SolicitacaoAgendamentoMenssaging request) {
+    private void publishNextMessage(SolicitacaoAgendamentoMenssaging request) {
         rabbitTemplate.convertAndSend(queueName, request);
     }
 }

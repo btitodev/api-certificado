@@ -10,7 +10,6 @@ public record SolicitacaoCertificadoResponseDTO(
         String nome,
         String email,
         LocalDateTime dataSolicitacao,
-        StatusSolicitacaoCertificado status,
-        String ticket) {
+        StatusSolicitacaoCertificado status) {
 
 }

@@ -27,7 +27,7 @@ public class SolicitacaoCertificadoProducer implements MessagePublisher<Solicita
             log.info("Enviando solicitação de certificado - Cliente: {}, ID: {}", 
                     request.nome(), request.id());
             
-            sendMessageToQueue(request);
+            publishNextMessage(request);
             
             log.debug("Solicitação de certificado enviada com sucesso - ID: {}", 
                     request.id());
@@ -38,7 +38,7 @@ public class SolicitacaoCertificadoProducer implements MessagePublisher<Solicita
         }
     }
 
-    private void sendMessageToQueue(SolicitacaoCertificadoMenssaging request) {
+    private void publishNextMessage(SolicitacaoCertificadoMenssaging request) {
         rabbitTemplate.convertAndSend(queueName, request);
     }
 }

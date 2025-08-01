@@ -22,20 +22,12 @@ public class BoletoEmitidoConsumer {
         try {
             log.info("Iniciando processamento de boleto emitido id: {}", message.idSolicitacao());
             
-            processEmittedTicket(message);
+            //enviar boleto para CSO
             
             log.info("Solicitação processad com sucesso id: {}", message.idSolicitacao());
         } catch (Exception ex) {
             log.error("Failed to process emitted ticket for request ID: {}", message.idSolicitacao(), ex);
             throw ex; // Exception will be handled by RabbitMQ
         }
-    }
-
-    private void processEmittedTicket(BoletoEmitidoMenssaging message) {
-        // Uncomment in production:
-        // csoApiClient.sendBoletoEmitido(message);
-        log.debug("Simulating external API call for request ID: {}", message.idSolicitacao());
-        
-        // Additional processing logic can be added here
     }
 }

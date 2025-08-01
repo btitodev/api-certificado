@@ -7,3 +7,4 @@ public record SolicitacaoBoletoMenssaging(
     String email, 
     UUID idSolicitacao) {
 }
+    

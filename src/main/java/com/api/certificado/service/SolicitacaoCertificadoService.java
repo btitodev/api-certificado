@@ -10,7 +10,7 @@ import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
 import com.api.certificado.dto.SolicitacaoCertificadoRequestDTO;
 import com.api.certificado.dto.SolicitacaoCertificadoResponseDTO;
-import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
+import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
 import com.api.certificado.repository.SolicitacaoCertificadoRepository;
 
 import jakarta.persistence.EntityManager;
@@ -24,7 +24,7 @@ public class SolicitacaoCertificadoService {
         private SolicitacaoCertificadoRepository repository;
 
         @Autowired
-        private MessagePublisher<SolicitacaoCertificadoMenssaging> producerCertificado;
+        private MessagePublisher<SolicitacaoBoletoMenssaging> sendMessagingBoleto;
 
         @Autowired
         private EntityManager entityManager;
@@ -33,20 +33,20 @@ public class SolicitacaoCertificadoService {
         public UUID create(SolicitacaoCertificadoRequestDTO request) {
                 var solicitacao = new SolicitacaoCertificado(request);
                 repository.save(solicitacao);
-                entityManager.flush(); 
+                entityManager.flush();
                 return solicitacao.getId();
         }
 
-        public void publishSolicitacao(UUID id) {
-                var solicitacao = repository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Solicitação não encontrada: " + id));
+        public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoRequestDTO request) {
 
-                SolicitacaoCertificadoMenssaging mensagem = new SolicitacaoCertificadoMenssaging(
-                                solicitacao.getId(),
-                                solicitacao.getNome(),
-                                solicitacao.getEmail());
+                var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
+                                request.nome(),
+                                request.email(),
+                                request.idSolicitacao());
 
-                producerCertificado.publish(mensagem);
+                sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
+                updateStatus(request.idSolicitacao(),
+                            StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
         }
 
         public void updateStatus(UUID id, StatusSolicitacaoCertificado status) {
@@ -74,8 +74,7 @@ public class SolicitacaoCertificadoService {
                                 solicitacao.getNome(),
                                 solicitacao.getEmail(),
                                 solicitacao.getDataSolicitacao(),
-                                solicitacao.getStatus(),
-                                solicitacao.getTicket());
+                                solicitacao.getStatus());
         }
 
 }
