@@ -22,24 +22,18 @@ public class SolicitacaoAgendamentoConsumer {
 
     @RabbitListener(queues = "${broker.queue.solicitacao.agendamento.name}")
     public void receiveMessage(SolicitacaoAgendamentoMenssaging request) {
-        try {
+        System.out.println("Processando solicitação de agendamento: " + request);
 
-            System.out.println("Processando solicitação de agendamento: " + request);
+        AgendamentoRequestDTO agendamentoRequestDTO = new AgendamentoRequestDTO(
+                request.nome(),
+                request.email(),
+                request.idSolicitacao());
 
-            AgendamentoRequestDTO agendamentoRequestDTO = new AgendamentoRequestDTO(
-                    request.nome(),
-                    request.email(),
-                    request.idSolicitacao());
+        //validApiClient.createAgendamento(agendamentoRequestDTO);
 
-            validApiClient.createAgendamento(agendamentoRequestDTO);
+        solicitacaoCertificadoService.updateStatus(
+                request.idSolicitacao(),
+                StatusSolicitacaoCertificado.AGENDADO);
 
-            solicitacaoCertificadoService.updateStatus(
-                    request.idSolicitacao(), 
-                    StatusSolicitacaoCertificado.APROVADO
-            );
-
-        } catch (Exception e) {
-            throw new AmqpRejectAndDontRequeueException("Erro ao processar a mensagem", e);
-        }
     }
 }

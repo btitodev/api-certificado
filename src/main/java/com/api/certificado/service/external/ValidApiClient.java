@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
 import com.api.certificado.dto.AgendamentoRequestDTO;
 import com.api.certificado.dto.AgendamentoResponseDTO;
 import com.api.certificado.dto.PedidoCompraRequestDTO;
 import com.api.certificado.dto.PedidoCompraResponseDTO;
+import com.api.certificado.service.SolicitacaoCertificadoService;
 
 @Service
 public class ValidApiClient {
@@ -15,46 +17,42 @@ public class ValidApiClient {
     @Autowired
     private WebClient webClient;
 
+    @Autowired
+    SolicitacaoCertificadoService solicitacaoCertificadoService;
+
     public PedidoCompraResponseDTO createPedidoCompra(PedidoCompraRequestDTO request) {
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            var pedidoCompraResponse = webClient.post()
+                    .uri("https://api.valid.com.br/api/pedidos")
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(PedidoCompraResponseDTO.class)
+                    .block();
+
+            return pedidoCompraResponse;
+        } catch (Exception e) {
+            solicitacaoCertificadoService.updateStatus(request.idSolicitacao(),
+                    StatusSolicitacaoCertificado.FALHA_PEDIDO_COMPRA);
+            return null;
         }
 
-        var mockResponse = new PedidoCompraResponseDTO("mock-ticket-12345");
-        return mockResponse;
-
-        // var pedidoCompraResponse = webClient.post()
-        //         .uri("https://api.valid.com.br/api/pedidos") 
-        //         .bodyValue(request)
-        //         .retrieve()
-        //         .bodyToMono(PedidoCompraResponseDTO.class)
-        //         .block();
-
-        // return pedidoCompraResponse;
     }
 
     public AgendamentoResponseDTO createAgendamento(AgendamentoRequestDTO agendamentoRequestDTO) {
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            var agendamentoResponse = webClient.post()
+                    .uri("https://api.valid.com.br/api/agendamentos")
+                    .bodyValue(agendamentoRequestDTO)
+                    .retrieve()
+                    .bodyToMono(AgendamentoResponseDTO.class)
+                    .block();
+
+            return agendamentoResponse;
+        } catch (Exception e) {
+            solicitacaoCertificadoService.updateStatus(agendamentoRequestDTO.idSolicitacao(),
+                    StatusSolicitacaoCertificado.FALHA_AGENDAMENTO);
+            return null;
         }
-
-        // Mock response
-        return new AgendamentoResponseDTO(
-                agendamentoRequestDTO.nome(),
-                agendamentoRequestDTO.email(),
-                agendamentoRequestDTO.idSolicitacao()
-        );
-
-        // var agendamentoResponse = webClient.post()
-        //         .uri("https://api.valid.com.br/api/agendamentos")
-        //         .bodyValue(agendamentoRequestDTO)
-        //         .retrieve()
-        //         .bodyToMono(AgendamentoResponseDTO.class)
-        //         .block();
 
     }
 }

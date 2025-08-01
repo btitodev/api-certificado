@@ -39,8 +39,8 @@ public class SolicitacaoCertificado {
     public SolicitacaoCertificado(SolicitacaoCertificadoRequestDTO request) {
         this.nome = request.nome();
         this.email = request.email();
-        this.dataSolicitacao = LocalDateTime.now();
-        this.status = StatusSolicitacaoCertificado.PENDENTE;        
+        this.dataSolicitacao = LocalDateTime.now();     
+        this.status = StatusSolicitacaoCertificado.RECEBIDA;
     }
 
 }

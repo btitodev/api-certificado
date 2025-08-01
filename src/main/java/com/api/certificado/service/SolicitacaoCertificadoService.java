@@ -13,6 +13,7 @@ import com.api.certificado.dto.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
 import com.api.certificado.repository.SolicitacaoCertificadoRepository;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -25,27 +26,27 @@ public class SolicitacaoCertificadoService {
         @Autowired
         private MessagePublisher<SolicitacaoCertificadoMenssaging> producerCertificado;
 
+        @Autowired
+        private EntityManager entityManager;
+
         @Transactional
-        public SolicitacaoCertificadoResponseDTO create(SolicitacaoCertificadoRequestDTO request) {
-                
-                var newSolicitacaoCertificado = new SolicitacaoCertificado(request);
+        public UUID create(SolicitacaoCertificadoRequestDTO request) {
+                var solicitacao = new SolicitacaoCertificado(request);
+                repository.save(solicitacao);
+                entityManager.flush(); 
+                return solicitacao.getId();
+        }
 
-                repository.save(newSolicitacaoCertificado);
+        public void publishSolicitacao(UUID id) {
+                var solicitacao = repository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Solicitação não encontrada: " + id));
 
-                SolicitacaoCertificadoMenssaging requestMessaging = new SolicitacaoCertificadoMenssaging(
-                                newSolicitacaoCertificado.getId(),
-                                newSolicitacaoCertificado.getNome(),
-                                newSolicitacaoCertificado.getEmail());
+                SolicitacaoCertificadoMenssaging mensagem = new SolicitacaoCertificadoMenssaging(
+                                solicitacao.getId(),
+                                solicitacao.getNome(),
+                                solicitacao.getEmail());
 
-                producerCertificado.publish(requestMessaging);
-
-                return new SolicitacaoCertificadoResponseDTO(
-                                newSolicitacaoCertificado.getId(),
-                                newSolicitacaoCertificado.getNome(),
-                                newSolicitacaoCertificado.getEmail(),
-                                newSolicitacaoCertificado.getDataSolicitacao(),
-                                newSolicitacaoCertificado.getStatus(),
-                                newSolicitacaoCertificado.getTicket());
+                producerCertificado.publish(mensagem);
         }
 
         public void updateStatus(UUID id, StatusSolicitacaoCertificado status) {

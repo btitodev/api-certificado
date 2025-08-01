@@ -30,7 +30,13 @@ public class SolicitacaoCertificadoController {
     @PostMapping
     public ResponseEntity<SolicitacaoCertificadoResponseDTO> create(
             @RequestBody @Valid SolicitacaoCertificadoRequestDTO request) {
-        SolicitacaoCertificadoResponseDTO response = service.create(request);
+
+        var id = service.create(request);
+
+        service.publishSolicitacao(id);
+
+        SolicitacaoCertificadoResponseDTO response = service.getById(id);
+
         URI location = URI.create("/solicitacao-certificado/" + response.id());
         return ResponseEntity.created(location).body(response);
     }

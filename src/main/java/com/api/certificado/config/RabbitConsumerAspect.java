@@ -3,6 +3,8 @@ package com.api.certificado.config;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.stereotype.Component;
 
@@ -10,18 +12,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class RabbitConsumerAspect {
 
+    private static final Logger logger = LoggerFactory.getLogger(RabbitConsumerAspect.class);
+
     @Around("@annotation(org.springframework.amqp.rabbit.annotation.RabbitListener)")
-    public Object interceptRabbitListener(ProceedingJoinPoint joinPoint) {
+    public Object interceptRabbitListener(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             return joinPoint.proceed();
-        } catch (Throwable ex) {
-            // Log estruturado pode ir aqui
-            System.err.println("Erro interceptado no consumer: " + ex.getMessage());
+        } catch (Exception ex) {
+            Object[] args = joinPoint.getArgs();
+            String payload = args.length > 0 ? args[0].toString() : "N/A";
 
-            // Enviar para sistema de métricas, se quiser
-            // metricService.increment("consumer.falha");
+            String errorMessage = String.format(
+                "Falha ao processar mensagem na fila %s. Erro: %s. Payload: %s",
+                joinPoint.getSignature().toShortString(), // Nome do método listener
+                ex.getMessage(),
+                payload
+            );
+            
+            logger.error(errorMessage, ex);
 
-            throw new AmqpRejectAndDontRequeueException("Erro tratado pelo Aspect", ex);
+            // Rejeita a mensagem e a envia para a fila DLQ
+            throw new AmqpRejectAndDontRequeueException(errorMessage, ex);
         }
     }
 }

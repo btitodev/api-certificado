@@ -1,16 +1,20 @@
 package com.api.certificado.domain.solicitacaoCertificado;
 
 public enum StatusSolicitacaoCertificado {
-    PENDENTE("Pendente"),
-    APROVADO("Aprovado"),
-    REJEITADO("Rejeitado"),
-    PROCESSANDO("Processando"),
-    FALHA("Falha"),
-    PEDIDO_COMPRA_SOLICITADO("Pedido de Compra Solicitado"),
-    BOLETO_EMITIDO("Boleto Emitido"),
-    BOLETO_SOLICITADO("Boleto Solicitado"),
-    BOLETO_PAGO("Boleto Pago"),
-    BOLETO_ENVIADO("Boleto Enviado");
+    RECEBIDA("Solicitação recebida"),
+    PEDIDO_COMPRA_SOLICITADO("Pedido de compra enviado para Valid"),
+    PEDIDO_COMPRA_CONCLUIDO("Pedido de compra concluído"),
+    BOLETO_SOLICITADO("Boleto solicitado à R-Payment"),
+    BOLETO_EMITIDO("Boleto emitido"),
+    AGUARDANDO_PAGAMENTO("Aguardando pagamento do boleto"),
+    BOLETO_PAGO("Boleto pago"),
+    AGENDAMENTO_SOLICITADO("Agendamento solicitado à Valid"),
+    AGENDADO("Agendamento concluído"),
+    CANCELADA("Solicitação cancelada"),
+    FALHA_PEDIDO_COMPRA("Falha ao solicitar pedido de compra"), 
+    FALHA_AGENDAMENTO("Falha ao solicitar agendamento"),
+    FALHA_ENVIO_BOLETO("Falha ao enviar boleto");
+
 
     private final String descricao;
 
@@ -21,5 +25,4 @@ public enum StatusSolicitacaoCertificado {
     public String getDescricao() {
         return descricao;
     }
-
 }
