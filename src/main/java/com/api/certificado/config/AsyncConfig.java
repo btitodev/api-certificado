@@ -10,14 +10,18 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer {
+
     @Override
     public Executor getAsyncExecutor() {
+        int núcleos = Runtime.getRuntime().availableProcessors();
+
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(5);     
-        executor.setMaxPoolSize(10);   
-        executor.setQueueCapacity(100);  
+        executor.setCorePoolSize(núcleos);                    
+        executor.setMaxPoolSize(núcleos * 2);                 
+        executor.setQueueCapacity(núcleos * 50);             
         executor.setThreadNamePrefix("Async-");  
         executor.initialize();
         return executor;
     }
 }
+
