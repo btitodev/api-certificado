@@ -13,10 +13,10 @@ import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
 import com.api.certificado.dto.SolicitacaoCertificadoRequestDTO;
 import com.api.certificado.dto.SolicitacaoCertificadoResponseDTO;
+import com.api.certificado.exception.SolicitacaoNaoEncontradaException;
 import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
 import com.api.certificado.repository.SolicitacaoCertificadoRepository;
 
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +26,6 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
 
         private final SolicitacaoCertificadoRepository repository;
         private final MessagePublisher<SolicitacaoBoletoMenssaging> sendMessagingBoleto;
-        private final EntityManager entityManager;
 
         private ApplicationContext applicationContext;
 
@@ -87,7 +86,7 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
         public SolicitacaoCertificadoResponseDTO getById(UUID id) {
                 try {
                         var solicitacao = repository.findById(id)
-                                        .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
+                                        .orElseThrow(() -> new SolicitacaoNaoEncontradaException("Solicitação não encontrada"));
 
                         return new SolicitacaoCertificadoResponseDTO(
                                         solicitacao.getId(),
@@ -95,6 +94,8 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                                         solicitacao.getEmail(),
                                         solicitacao.getDataSolicitacao(),
                                         solicitacao.getStatus());
+                } catch (SolicitacaoNaoEncontradaException ex) {
+                        throw ex;
                 } catch (Exception ex) {
                         throw new RuntimeException("Erro ao buscar solicitação por ID", ex);
                 }
