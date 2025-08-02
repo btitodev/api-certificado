@@ -2,8 +2,11 @@ package com.api.certificado.service;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
@@ -15,19 +18,26 @@ import com.api.certificado.repository.SolicitacaoCertificadoRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
-public class SolicitacaoCertificadoService {
+@RequiredArgsConstructor
+public class SolicitacaoCertificadoService implements ApplicationContextAware {
 
-        @Autowired
-        private SolicitacaoCertificadoRepository repository;
+        private final SolicitacaoCertificadoRepository repository;
+        private final MessagePublisher<SolicitacaoBoletoMenssaging> sendMessagingBoleto;
+        private final EntityManager entityManager;
 
-        @Autowired
-        private MessagePublisher<SolicitacaoBoletoMenssaging> sendMessagingBoleto;
+        private ApplicationContext applicationContext;
 
-        @Autowired
-        private EntityManager entityManager;
+        @Override
+        public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+                this.applicationContext = applicationContext;
+        }
+
+        private SolicitacaoCertificadoService getSelf() {
+                return applicationContext.getBean(SolicitacaoCertificadoService.class);
+        }
 
         @Transactional
         public UUID create(SolicitacaoCertificadoRequestDTO request) {
@@ -42,15 +52,13 @@ public class SolicitacaoCertificadoService {
         }
 
         public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoRequestDTO request, UUID id) {
-
                 var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
                                 request.nome(),
                                 request.email(),
                                 request.idSolicitacao());
 
                 sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
-                updateStatus(id,
-                                StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
+                getSelf().updateStatus(id, StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
         }
 
         @Transactional
@@ -92,5 +100,4 @@ public class SolicitacaoCertificadoService {
                         throw new RuntimeException("Erro ao buscar solicitação por ID", ex);
                 }
         }
-
 }

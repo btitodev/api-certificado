@@ -14,7 +14,8 @@ public enum StatusSolicitacaoCertificado {
     CANCELADA("Solicitação cancelada"),
     FALHA_PEDIDO_COMPRA("Falha ao solicitar pedido de compra"), 
     FALHA_AGENDAMENTO("Falha ao solicitar agendamento"),
-    FALHA_ENVIO_BOLETO("Falha ao enviar boleto");
+    FALHA_ENVIO_BOLETO("Falha ao enviar boleto"),
+    FALHA_SOLICITACAO("Falha ao processar solicitação");
 
     private final String descricao;
 
