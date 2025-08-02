@@ -3,31 +3,59 @@ package com.api.certificado.service;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.api.certificado.domain.transacao.Transacao;
 import com.api.certificado.dto.TransacaoRequestDTO;
+import com.api.certificado.repository.SolicitacaoCertificadoRepository;
 import com.api.certificado.repository.TransacaoRepository;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TransacaoService {
 
-    private final TransacaoRepository repository;
+    private final TransacaoRepository transacaoRepository;
+    private final SolicitacaoCertificadoRepository solicitacaoCertificadoRepository;
+    private final EntityManager entityManager;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UUID create(TransacaoRequestDTO request) {
-
         try {
-            var transacao = new Transacao(request);
-            repository.save(transacao);
-            repository.flush();
-            return transacao.getId();
+            Transacao novaTransacao = new Transacao(request);
+
+            Transacao transacaoSalva = transacaoRepository.save(novaTransacao);
+            return transacaoSalva.getId();
+
         } catch (Exception ex) {
-            throw new RuntimeException("Falha ao salvar transação");
+            log.error("Erro ao salvar transação padrão", ex);
+            throw new RuntimeException("Falha ao salvar transação padrão", ex);
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UUID createErrorTransaction(TransacaoRequestDTO request, String errorMessage) {
+        try {
+            Transacao transacaoErro = new Transacao();
+            transacaoErro.setData(request.data());
+            transacaoErro.setStatus(request.status());
+            transacaoErro.setSucesso(false);
+            transacaoErro.setMensagem(errorMessage);
+            // Se houver campo dedicado para erro, seta aqui
+
+            Transacao transacaoSalva = transacaoRepository.save(transacaoErro);
+
+            log.warn("Transação de erro criada: {} - Motivo: {}", transacaoSalva.getId(), errorMessage);
+            return transacaoSalva.getId();
+
+        } catch (Exception ex) {
+            log.error("Erro ao criar transação de erro: {}", errorMessage, ex);
+            throw new RuntimeException("Falha ao salvar transação de erro", ex);
+        }
+    }
 }

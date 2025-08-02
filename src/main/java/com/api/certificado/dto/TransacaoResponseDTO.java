@@ -11,6 +11,6 @@ public record TransacaoResponseDTO(
         LocalDateTime data,
         StatusSolicitacaoCertificado status,
         Boolean sucesso,
-        Boolean mensagem) {
+        String mensagem) {
 
 }
