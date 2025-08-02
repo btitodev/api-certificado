@@ -1,6 +1,5 @@
 package com.api.certificado.service.external;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -9,11 +8,13 @@ import com.api.certificado.dto.AgendamentoResponseDTO;
 import com.api.certificado.dto.PedidoCompraRequestDTO;
 import com.api.certificado.dto.PedidoCompraResponseDTO;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ValidApiClient {
 
-    @Autowired
-    private WebClient webClient;
+    private final WebClient webClient;
 
     public PedidoCompraResponseDTO createPedidoCompra(PedidoCompraRequestDTO request) {
         try {

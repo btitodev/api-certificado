@@ -16,18 +16,17 @@ import com.api.certificado.repository.SolicitacaoCertificadoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class SolicitacaoCertificadoService {
 
-        @Autowired
-        private SolicitacaoCertificadoRepository repository;
+        private final SolicitacaoCertificadoRepository repository;
 
-        @Autowired
-        private MessagePublisher<SolicitacaoBoletoMenssaging> sendMessagingBoleto;
+        private final MessagePublisher<SolicitacaoBoletoMenssaging> sendMessagingBoleto;
 
-        @Autowired
-        private EntityManager entityManager;
+        private final EntityManager entityManager;
 
         @Transactional
         public UUID create(SolicitacaoCertificadoRequestDTO request) {
