@@ -89,27 +89,7 @@ public class GlobalExceptionHandler {
         );
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponseDTO> handleTypeMismatch(
-            MethodArgumentTypeMismatchException ex, WebRequest request) {
-        
-        log.warn("Erro de tipo de parâmetro: {}", ex.getMessage());
-        
-        String message = String.format("Parâmetro '%s' deve ser do tipo %s", 
-            ex.getName(), 
-            ex.getRequiredType().getSimpleName());
-        
-        var errorResponse = new ErrorResponseDTO(
-            "TIPO_PARAMETRO_INVALIDO",
-            message,
-            HttpStatus.BAD_REQUEST.value(),
-            request.getDescription(false).replace("uri=", "")
-        );
-        
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
+    }    
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponseDTO> handleRuntimeException(
