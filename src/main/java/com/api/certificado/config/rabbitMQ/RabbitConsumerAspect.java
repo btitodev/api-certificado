@@ -1,4 +1,4 @@
-package com.api.certificado.config;
+package com.api.certificado.config.rabbitMQ;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

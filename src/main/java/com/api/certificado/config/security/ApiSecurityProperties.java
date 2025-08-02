@@ -1,4 +1,4 @@
-package com.api.certificado.config;
+package com.api.certificado.config.security;
 
 import java.util.List;
 

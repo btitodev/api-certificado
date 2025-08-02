@@ -1,4 +1,4 @@
-package com.api.certificado.config;
+package com.api.certificado.config.rabbitMQ;
 
 import java.util.HashMap;
 import java.util.Map;

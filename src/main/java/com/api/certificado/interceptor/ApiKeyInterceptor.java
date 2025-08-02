@@ -8,7 +8,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.api.certificado.annotation.RequireApiKey;
-import com.api.certificado.config.ApiSecurityProperties;
+import com.api.certificado.config.security.ApiSecurityProperties;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiKeyInterceptor implements HandlerInterceptor {
 
     private final ApiSecurityProperties apiSecurityProperties;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) 
             throws Exception {

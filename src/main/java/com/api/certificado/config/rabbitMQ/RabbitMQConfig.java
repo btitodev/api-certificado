@@ -1,4 +1,4 @@
-package com.api.certificado.config;
+package com.api.certificado.config.rabbitMQ;
 
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;

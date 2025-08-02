@@ -1,4 +1,4 @@
-package com.api.certificado.config;
+package com.api.certificado.config.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
