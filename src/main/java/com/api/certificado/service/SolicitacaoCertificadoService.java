@@ -43,8 +43,7 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
         public UUID create(SolicitacaoCertificadoRequestDTO request) {
                 try {
                         var solicitacao = new SolicitacaoCertificado(request);
-                        repository.save(solicitacao);
-                        entityManager.flush();
+                        repository.saveAndFlush(solicitacao);
                         return solicitacao.getId();
                 } catch (Exception ex) {
                         throw new RuntimeException("Falha ao salvar a solicitação", ex);
@@ -67,7 +66,7 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                         var solicitacao = repository.findById(id)
                                         .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
                         solicitacao.setStatus(status);
-                        repository.save(solicitacao);
+                        repository.saveAndFlush(solicitacao);
                 } catch (Exception ex) {
                         throw new RuntimeException("Erro ao atualizar o status da solicitação", ex);
                 }
@@ -79,7 +78,7 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                         var solicitacao = repository.findById(id)
                                         .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
                         solicitacao.setTicket(ticket);
-                        repository.save(solicitacao);
+                        repository.saveAndFlush(solicitacao);
                 } catch (Exception ex) {
                         throw new RuntimeException("Erro ao adicionar número do ticket", ex);
                 }

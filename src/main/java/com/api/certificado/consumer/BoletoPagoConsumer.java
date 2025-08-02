@@ -64,7 +64,7 @@ public class BoletoPagoConsumer {
                 message.email(),
                 message.idSolicitacao());
 
-        var response = validApiClient.createPedidoCompra(request);
+        var response = validApiClient.createPedidoCompra(request).block();
         solicitacaoCertificadoService.updateStatus(message.idSolicitacao(),
                 StatusSolicitacaoCertificado.PEDIDO_COMPRA_CONCLUIDO);
         return response;

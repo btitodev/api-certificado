@@ -70,13 +70,12 @@ public class TransacaoAsyncService {
         try {
             log.info("*** INICIANDO ASYNC ERROR TRANSACTION - Erro: {}", error.getMessage());
             
-            // Criar uma transação de erro sem solicitação específica
             var transacaoRequest = new TransacaoRequestDTO(
-                    null, // Sem ID específico para erro de criação
+                    null, 
                     LocalDateTime.now(),
-                    StatusSolicitacaoCertificado.FALHA_SOLICITACAO, // Novo status para erro
-                    false, // sucesso = false
-                    error.getMessage() // mensagem = false (indicando erro)
+                    StatusSolicitacaoCertificado.FALHA_SOLICITACAO, 
+                    false, 
+                    error.getMessage() 
             );
             
             transacaoService.createErrorTransaction(transacaoRequest, error.getMessage());

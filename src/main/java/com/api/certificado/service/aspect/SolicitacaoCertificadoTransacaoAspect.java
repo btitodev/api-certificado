@@ -22,7 +22,6 @@ public class SolicitacaoCertificadoTransacaoAspect {
 
     private final TransacaoAsyncService transacaoAsyncService;
 
-    // Aspect para criação bem-sucedida
     @AfterReturning(
         pointcut = "execution(* com.api.certificado.service.SolicitacaoCertificadoService.create(..))",
         returning = "solicitacaoId"
@@ -42,7 +41,6 @@ public class SolicitacaoCertificadoTransacaoAspect {
         });
     }
 
-    // Aspect para erro na criação
     @AfterThrowing(
         pointcut = "execution(* com.api.certificado.service.SolicitacaoCertificadoService.create(..))",
         throwing = "exception"
@@ -50,14 +48,12 @@ public class SolicitacaoCertificadoTransacaoAspect {
     public void gerarTransacaoAposErroSolicitacao(JoinPoint joinPoint, Exception exception) {
         log.error("*** ASPECT CREATE ERRO EXECUTADO - Erro: {}", exception.getMessage());
         try {
-            // Criar transação de erro de forma assíncrona
             transacaoAsyncService.createTransactionForErrorAsync(exception);
         } catch (Exception e) {
             log.error("Erro ao criar transação para erro de solicitação: {}", e.getMessage(), e);
         }
     }
 
-    // Aspect para update de status
     @AfterReturning(
         pointcut = "execution(* com.api.certificado.service.SolicitacaoCertificadoService.updateStatus(..)) && args(id, status)",
         argNames = "joinPoint,id,status"

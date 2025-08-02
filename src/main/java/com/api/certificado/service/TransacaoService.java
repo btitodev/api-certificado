@@ -21,8 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 public class TransacaoService {
 
     private final TransacaoRepository transacaoRepository;
-    private final SolicitacaoCertificadoRepository solicitacaoCertificadoRepository;
-    private final EntityManager entityManager;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UUID create(TransacaoRequestDTO request) {
@@ -46,7 +44,6 @@ public class TransacaoService {
             transacaoErro.setStatus(request.status());
             transacaoErro.setSucesso(false);
             transacaoErro.setMensagem(errorMessage);
-            // Se houver campo dedicado para erro, seta aqui
 
             Transacao transacaoSalva = transacaoRepository.save(transacaoErro);
 
