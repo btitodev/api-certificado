@@ -49,14 +49,14 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                 }
         }
 
-        public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoRequestDTO request, UUID id) {
+        public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoResponseDTO menssage) {
                 var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
-                                request.nome(),
-                                request.email(),
-                                request.idSolicitacao());
+                                menssage.nome(),
+                                menssage.email(),
+                                menssage.id());
 
                 sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
-                getSelf().updateStatus(id, StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
+                getSelf().updateStatus(menssage.id(), StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
         }
 
         @Transactional

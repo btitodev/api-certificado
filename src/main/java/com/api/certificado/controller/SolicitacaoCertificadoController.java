@@ -32,7 +32,7 @@ public class SolicitacaoCertificadoController {
             @RequestBody @Valid SolicitacaoCertificadoRequestDTO request) {
         var id = service.create(request);
         SolicitacaoCertificadoResponseDTO response = service.getById(id);
-        service.sendMessagingSolicitacaoBoleto(request, id);
+        service.sendMessagingSolicitacaoBoleto(response);
         URI location = URI.create("/solicitacao-certificado/" + response.id());
         return ResponseEntity.created(location).body(response);
     }
