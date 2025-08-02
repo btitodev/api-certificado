@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.api.certificado.annotation.RequireApiKey;
 import com.api.certificado.dto.SolicitacaoCertificadoRequestDTO;
 import com.api.certificado.dto.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.service.SolicitacaoCertificadoService;
@@ -37,6 +38,7 @@ public class SolicitacaoCertificadoController {
         return ResponseEntity.created(location).body(response);
     }
 
+    @RequireApiKey
     @GetMapping("/{id}")
     public ResponseEntity<SolicitacaoCertificadoResponseDTO> getById(@PathVariable UUID id) {
         SolicitacaoCertificadoResponseDTO response = service.getById(id);
