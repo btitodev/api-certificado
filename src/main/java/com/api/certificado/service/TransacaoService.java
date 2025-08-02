@@ -8,10 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.api.certificado.domain.transacao.Transacao;
 import com.api.certificado.dto.TransacaoRequestDTO;
-import com.api.certificado.repository.SolicitacaoCertificadoRepository;
 import com.api.certificado.repository.TransacaoRepository;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

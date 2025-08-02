@@ -44,7 +44,6 @@ public class Transacao {
     @Enumerated(EnumType.STRING)
     private StatusSolicitacaoCertificado status;
 
-    // Construtor para transações com solicitação
     public Transacao(SolicitacaoCertificado solicitacaoCertificado, StatusSolicitacaoCertificado status, Boolean sucesso, String mensagem) {
         this.solicitacaoCertificado = solicitacaoCertificado;
         this.data = LocalDateTime.now();
@@ -53,7 +52,6 @@ public class Transacao {
         this.mensagem = mensagem;
     }
 
-    // Construtor para transações de erro (sem solicitação específica)
     public Transacao(StatusSolicitacaoCertificado status, Boolean sucesso, String mensagem) {
         this.solicitacaoCertificado = null;
         this.data = LocalDateTime.now();
@@ -62,12 +60,10 @@ public class Transacao {
         this.mensagem = mensagem;
     }
 
-    // Construtor a partir do DTO (mantendo compatibilidade)
     public Transacao(TransacaoRequestDTO request) {
         this.data = LocalDateTime.now();
         this.status = request.status();
         this.sucesso = request.sucesso();
         this.mensagem = request.mensagem();
-        // solicitacaoCertificado será definido no service
     }
 }
