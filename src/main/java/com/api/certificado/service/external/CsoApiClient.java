@@ -8,14 +8,14 @@ import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertif
 import com.api.certificado.menssaging.BoletoEmitidoMenssaging;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CsoApiClient {
 
-    @Autowired
-    private WebClient webClient;
-
-    @Autowired
-    private SolicitacaoCertificadoService solicitacaoCertificadoService;
+    private final WebClient webClient;
+    private final SolicitacaoCertificadoService solicitacaoCertificadoService;
 
     public void sendBoletoEmitido(BoletoEmitidoMenssaging message) {
         try {
@@ -27,7 +27,7 @@ public class CsoApiClient {
                     .retrieve()
                     .bodyToMono(Void.class)
                     .subscribe();
-                    
+
         } catch (Exception e) {
             solicitacaoCertificadoService.updateStatus(message.idSolicitacao(),
                     StatusSolicitacaoCertificado.FALHA_ENVIO_BOLETO);

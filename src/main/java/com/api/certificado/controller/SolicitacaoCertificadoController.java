@@ -19,13 +19,17 @@ import com.api.certificado.dto.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 
 import jakarta.validation.Valid;
+import lombok.NoArgsConstructor;
 
 @RestController
 @RequestMapping("/api/solicitacao-certificado")
 public class SolicitacaoCertificadoController {
 
-    @Autowired
-    private SolicitacaoCertificadoService service;
+    private final SolicitacaoCertificadoService service;
+
+    public SolicitacaoCertificadoController(SolicitacaoCertificadoService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public ResponseEntity<SolicitacaoCertificadoResponseDTO> create(
