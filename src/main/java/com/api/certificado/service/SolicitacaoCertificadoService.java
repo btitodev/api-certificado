@@ -8,11 +8,11 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoRequestDTO;
+import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
-import com.api.certificado.dto.SolicitacaoCertificadoRequestDTO;
-import com.api.certificado.dto.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.exception.SolicitacaoNaoEncontradaException;
 import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
 import com.api.certificado.repository.SolicitacaoCertificadoRepository;
@@ -39,20 +39,23 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
         }
 
         @Transactional
-        public UUID create(SolicitacaoCertificadoRequestDTO request) {
+        public SolicitacaoCertificadoResponseDTO create(SolicitacaoCertificadoRequestDTO request) {
                 try {
                         var solicitacao = new SolicitacaoCertificado(request);
                         repository.saveAndFlush(solicitacao);
-                        return solicitacao.getId();
+
+                        return new SolicitacaoCertificadoResponseDTO(
+                                        solicitacao.getId(),
+                                        solicitacao.getDataSolicitacao(),
+                                        solicitacao.getStatus());
                 } catch (Exception ex) {
                         throw new RuntimeException("Falha ao salvar a solicitação", ex);
                 }
         }
 
+
         public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoResponseDTO menssage) {
                 var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
-                                menssage.nome(),
-                                menssage.email(),
                                 menssage.id());
 
                 sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
@@ -90,8 +93,6 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
 
                         return new SolicitacaoCertificadoResponseDTO(
                                         solicitacao.getId(),
-                                        solicitacao.getNome(),
-                                        solicitacao.getEmail(),
                                         solicitacao.getDataSolicitacao(),
                                         solicitacao.getStatus());
                 } catch (SolicitacaoNaoEncontradaException ex) {

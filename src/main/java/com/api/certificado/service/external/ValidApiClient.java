@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.api.certificado.controller.dto.agendamento.AgendamentoRequestDTO;
+import com.api.certificado.controller.dto.agendamento.AgendamentoResponseDTO;
+import com.api.certificado.controller.dto.pedidoCompra.PedidoCompraRequestDTO;
+import com.api.certificado.controller.dto.pedidoCompra.PedidoCompraResponseDTO;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
-import com.api.certificado.dto.AgendamentoRequestDTO;
-import com.api.certificado.dto.AgendamentoResponseDTO;
-import com.api.certificado.dto.PedidoCompraRequestDTO;
-import com.api.certificado.dto.PedidoCompraResponseDTO;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 
 import lombok.RequiredArgsConstructor;

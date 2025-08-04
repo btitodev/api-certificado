@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.api.certificado.controller.dto.pedidoCompra.PedidoCompraResponseDTO;
 import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
-import com.api.certificado.dto.PedidoCompraResponseDTO;
 import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
 import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
 import com.api.certificado.service.SolicitacaoCertificadoService;
@@ -66,8 +66,6 @@ public class SolicitacaoCertificadoConsumer {
 
     private void publishNextMessage(SolicitacaoCertificadoMenssaging request) {
         var nextMessage = new SolicitacaoBoletoMenssaging(
-                request.nome(),
-                request.email(),
                 request.id());
 
         solicitacaoBoletoProducer.publish(nextMessage);

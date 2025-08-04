@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.api.certificado.controller.dto.transacao.TransacaoRequestDTO;
 import com.api.certificado.domain.transacao.Transacao;
-import com.api.certificado.dto.TransacaoRequestDTO;
 import com.api.certificado.repository.TransacaoRepository;
 
 import lombok.RequiredArgsConstructor;

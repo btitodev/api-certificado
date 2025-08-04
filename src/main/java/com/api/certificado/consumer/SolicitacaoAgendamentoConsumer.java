@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.api.certificado.controller.dto.agendamento.AgendamentoRequestDTO;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
-import com.api.certificado.dto.AgendamentoRequestDTO;
 import com.api.certificado.menssaging.SolicitacaoAgendamentoMenssaging;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 import com.api.certificado.service.external.ValidApiClient;

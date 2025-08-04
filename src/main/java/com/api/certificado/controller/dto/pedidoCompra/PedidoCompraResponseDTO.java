@@ -1,4 +1,4 @@
-package com.api.certificado.dto;
+package com.api.certificado.controller.dto.pedidoCompra;
 
 public record PedidoCompraResponseDTO(String ticket) {
 

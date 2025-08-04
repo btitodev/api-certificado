@@ -16,7 +16,7 @@ import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
 public class SolicitacaoBoletoProducer implements MessagePublisher<SolicitacaoBoletoMenssaging> {
 
     private final RabbitTemplate rabbitTemplate;
-    
+
     @Value("${broker.queue.solicitacao.boleto.name}")
     private String queueName;
 
@@ -25,14 +25,14 @@ public class SolicitacaoBoletoProducer implements MessagePublisher<SolicitacaoBo
     public void publish(SolicitacaoBoletoMenssaging request) {
         try {
             log.info("Enviando solicitação de boleto para o cliente: {}, ID: {}", 
-                    request.nome(), request.idSolicitacao());
-            
+            request.idSolicitacao());
+
             publishNextMessage(request);
-            
-            log.debug("Solicitação de boleto enviada com sucesso para ID: {}", 
+
+            log.debug("Solicitação de boleto enviada com sucesso para ID: {}",
                     request.idSolicitacao());
         } catch (Exception ex) {
-            log.error("Falha ao enviar solicitação de boleto para ID: {}", 
+            log.error("Falha ao enviar solicitação de boleto para ID: {}",
                     request.idSolicitacao(), ex);
             throw new RuntimeException("Erro ao publicar mensagem na fila de boletos", ex);
         }
