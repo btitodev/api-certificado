@@ -1,5 +1,6 @@
 package com.api.certificado.service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.BeansException;
@@ -12,10 +13,13 @@ import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCert
 import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
+import com.api.certificado.domain.solicitacaoCertificado.Solicitante;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
 import com.api.certificado.exception.SolicitacaoNaoEncontradaException;
-import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
+import com.api.certificado.menssaging.message.SolicitacaoBoletoMenssaging;
 import com.api.certificado.repository.SolicitacaoCertificadoRepository;
+import com.api.certificado.repository.SolicitanteRepository;
+import com.api.certificado.util.mapper.SolicitacaoCertificadoMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class SolicitacaoCertificadoService implements ApplicationContextAware {
 
         private final SolicitacaoCertificadoRepository repository;
+        private final SolicitanteService solicitanteService;
         private final MessagePublisher<SolicitacaoBoletoMenssaging> sendMessagingBoleto;
 
         private ApplicationContext applicationContext;
@@ -41,18 +46,27 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
         @Transactional
         public SolicitacaoCertificadoResponseDTO create(SolicitacaoCertificadoRequestDTO request) {
                 try {
-                        var solicitacao = new SolicitacaoCertificado(request);
+                        var requerente = solicitanteService.buscarOuCriarSolicitante(request.requerente());
+
+                        var cliente = requerente;
+
+                        if (!solicitanteService.saoAMesmaPessoa(request.requerente(), request.cliente())) {
+                                cliente = solicitanteService.buscarOuCriarSolicitante(request.cliente());
+                        }
+
+                        var solicitacao = criarSolicitacao(request, requerente, cliente);
+
                         repository.saveAndFlush(solicitacao);
 
                         return new SolicitacaoCertificadoResponseDTO(
                                         solicitacao.getId(),
                                         solicitacao.getDataSolicitacao(),
                                         solicitacao.getStatus());
+
                 } catch (Exception ex) {
                         throw new RuntimeException("Falha ao salvar a solicitação", ex);
                 }
         }
-
 
         public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoResponseDTO menssage) {
                 var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
@@ -60,6 +74,24 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
 
                 sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
                 getSelf().updateStatus(menssage.id(), StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
+        }
+
+        private SolicitacaoCertificado criarSolicitacao(
+                        SolicitacaoCertificadoRequestDTO request,
+                        Solicitante requerente,
+                        Solicitante cliente) {
+
+                var solicitacao = new SolicitacaoCertificado();
+
+                // Dados básicos
+                solicitacao.setDataSolicitacao(LocalDateTime.now());
+                solicitacao.setStatus(StatusSolicitacaoCertificado.SOLICITACAO_EMITIDA);
+
+                // Relacionamentos
+                solicitacao.setRequerente(requerente);
+                solicitacao.setCliente(cliente);
+
+                return solicitacao;
         }
 
         @Transactional
@@ -89,7 +121,8 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
         public SolicitacaoCertificadoResponseDTO getById(UUID id) {
                 try {
                         var solicitacao = repository.findById(id)
-                                        .orElseThrow(() -> new SolicitacaoNaoEncontradaException("Solicitação não encontrada"));
+                                        .orElseThrow(() -> new SolicitacaoNaoEncontradaException(
+                                                        "Solicitação não encontrada"));
 
                         return new SolicitacaoCertificadoResponseDTO(
                                         solicitacao.getId(),

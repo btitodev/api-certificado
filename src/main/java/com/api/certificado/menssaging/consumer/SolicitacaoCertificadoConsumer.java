@@ -1,4 +1,4 @@
-package com.api.certificado.consumer;
+package com.api.certificado.menssaging.consumer;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.scheduling.annotation.Async;
@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import com.api.certificado.controller.dto.pedidoCompra.PedidoCompraResponseDTO;
 import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
-import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
-import com.api.certificado.menssaging.SolicitacaoCertificadoMenssaging;
+import com.api.certificado.menssaging.message.SolicitacaoBoletoMenssaging;
+import com.api.certificado.menssaging.message.SolicitacaoCertificadoMenssaging;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 import com.api.certificado.service.external.ValidApiClient;
 

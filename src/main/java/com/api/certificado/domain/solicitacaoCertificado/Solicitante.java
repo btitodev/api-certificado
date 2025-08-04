@@ -31,13 +31,5 @@ public class Solicitante {
     private String documento;
     private String telefone;
     private TipoSolicitante tipo;
-
-    public Solicitante(SolicitanteRequestDTO request) {
-        this.nome = request.nome();
-        this.email = request.email();
-        this.documento = request.documento();
-        this.telefone = request.telefone();
-        this.tipo = request.tipo();
-    }
     
 }

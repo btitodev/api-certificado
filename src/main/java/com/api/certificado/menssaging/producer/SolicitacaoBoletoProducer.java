@@ -1,4 +1,4 @@
-package com.api.certificado.producer;
+package com.api.certificado.menssaging.producer;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.api.certificado.domain.MessagePublisher;
-import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
+import com.api.certificado.menssaging.message.SolicitacaoBoletoMenssaging;
 
 @Slf4j
 @Service

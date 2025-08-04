@@ -59,11 +59,4 @@ public class Transacao {
         this.sucesso = sucesso;
         this.mensagem = mensagem;
     }
-
-    public Transacao(TransacaoRequestDTO request) {
-        this.data = LocalDateTime.now();
-        this.status = request.status();
-        this.sucesso = request.sucesso();
-        this.mensagem = request.mensagem();
-    }
 }

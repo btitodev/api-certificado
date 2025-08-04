@@ -1,4 +1,4 @@
-package com.api.certificado.consumer;
+package com.api.certificado.menssaging.consumer;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.scheduling.annotation.Async;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import com.api.certificado.menssaging.BoletoEmitidoMenssaging;
+import com.api.certificado.menssaging.message.BoletoEmitidoMenssaging;
 import com.api.certificado.service.external.CsoApiClient;
 
 @Slf4j

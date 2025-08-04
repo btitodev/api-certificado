@@ -1,4 +1,4 @@
-package com.api.certificado.consumer;
+package com.api.certificado.menssaging.consumer;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.scheduling.annotation.Async;
@@ -10,8 +10,8 @@ import com.api.certificado.controller.dto.pedidoCompra.PedidoCompraRequestDTO;
 import com.api.certificado.controller.dto.pedidoCompra.PedidoCompraResponseDTO;
 import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
-import com.api.certificado.menssaging.BoletoEmitidoMenssaging;
-import com.api.certificado.menssaging.SolicitacaoAgendamentoMenssaging;
+import com.api.certificado.menssaging.message.BoletoEmitidoMenssaging;
+import com.api.certificado.menssaging.message.SolicitacaoAgendamentoMenssaging;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 import com.api.certificado.service.external.ValidApiClient;
 

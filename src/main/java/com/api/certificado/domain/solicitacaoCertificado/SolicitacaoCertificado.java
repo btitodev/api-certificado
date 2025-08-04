@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoRequestDTO;
 import com.api.certificado.domain.transacao.Transacao;
 
 import jakarta.persistence.CascadeType;
@@ -52,12 +51,5 @@ public class SolicitacaoCertificado {
 
     @OneToMany(mappedBy = "solicitacaoCertificado", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transacao> transacoes = new ArrayList<>();
-
-    public SolicitacaoCertificado(SolicitacaoCertificadoRequestDTO request) {
-        this.requerente = new Solicitante(request.requerente());
-        this.cliente = new Solicitante(request.cliente());
-        this.dataSolicitacao = LocalDateTime.now();
-        this.status = StatusSolicitacaoCertificado.SOLICITACAO_EMITIDA;
-    }
 
 }
