@@ -67,8 +67,7 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
         public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoResponseDTO request) {
                 var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
                                 request.id(),
-                                request.cliente(),
-                                request.status());
+                                request.cliente());
 
                 sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
                 getSelf().updateStatus(request.id(), StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
@@ -107,6 +106,18 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                         repository.saveAndFlush(solicitacao);
                 } catch (Exception ex) {
                         throw new RuntimeException("Erro ao adicionar número do ticket", ex);
+                }
+        }
+
+        @Transactional
+        public void addBoletoLink(UUID id, String boletoUrl) {
+                try {
+                        var solicitacao = repository.findById(id)
+                                        .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
+                        solicitacao.setLinkBoleto(boletoUrl);
+                        repository.saveAndFlush(solicitacao);
+                } catch (Exception ex) {
+                        throw new RuntimeException("Erro ao adicionar link do boleto", ex);
                 }
         }
 
