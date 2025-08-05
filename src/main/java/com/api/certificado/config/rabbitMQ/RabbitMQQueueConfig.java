@@ -15,9 +15,6 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQQueueConfig {
 
     // Filas principais
-    @Value("${broker.queue.solicitacao.certificado.name}")
-    private String certificadoQueue;
-
     @Value("${broker.queue.solicitacao.boleto.name}")
     private String boletoQueue;
 
@@ -31,9 +28,6 @@ public class RabbitMQQueueConfig {
     private String boletoPagoQueue;
 
     // Filas DLQ
-    @Value("${broker.queue.solicitacao.certificado.dlq.name}")
-    private String certificadoDlqQueue;
-
     @Value("${broker.queue.solicitacao.boleto.dlq.name}")
     private String boletoDlqQueue;
 
@@ -47,40 +41,11 @@ public class RabbitMQQueueConfig {
     private String boletoPagoDlqQueue;
 
     // Exchanges DLQ centralizadas
-    @Value("${broker.exchange.dlq.certificado}")
-    private String certificadoDlx;
-
     @Value("${broker.exchange.dlq.boleto}")
     private String boletoDlx;
 
     @Value("${broker.exchange.dlq.agendamento}")
     private String agendamentoDlx;
-
-    // ==================== Fila principal: CERTIFICADO ====================
-    @Bean
-    public Queue certificadoQueue() {
-        Map<String, Object> args = new HashMap<>();
-        args.put("x-dead-letter-exchange", certificadoDlx);
-        args.put("x-dead-letter-routing-key", certificadoDlqQueue);
-        return new Queue(certificadoQueue, true, false, false, args);
-    }
-
-    @Bean
-    public Queue certificadoDlq() {
-        return new Queue(certificadoDlqQueue, true);
-    }
-
-    @Bean
-    public DirectExchange certificadoDlxExchange() {
-        return new DirectExchange(certificadoDlx);
-    }
-
-    @Bean
-    public Binding certificadoDlqBinding() {
-        return BindingBuilder.bind(certificadoDlq())
-                .to(certificadoDlxExchange())
-                .with(certificadoDlqQueue);
-    }
 
     // ==================== Fila principal: BOLETO ====================
     @Bean

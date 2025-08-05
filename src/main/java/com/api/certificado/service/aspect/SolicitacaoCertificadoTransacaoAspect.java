@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoResponseDTO;
+import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,18 +26,18 @@ public class SolicitacaoCertificadoTransacaoAspect {
 
     @AfterReturning(
         pointcut = "execution(* com.api.certificado.service.SolicitacaoCertificadoService.create(..))",
-        returning = "solicitacaoId"
+        returning = "response"
     )
-    public void gerarTransacaoAposSolicitacao(JoinPoint joinPoint, UUID solicitacaoId) {
-        log.info("*** ASPECT CREATE EXECUTADO - ID: {}", solicitacaoId);
+    public void gerarTransacaoAposSolicitacao(JoinPoint joinPoint, SolicitacaoCertificadoResponseDTO response) {
+        log.info("*** ASPECT CREATE EXECUTADO - ID: {}", response.id());
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
                 try {
-                    log.info("*** AFTER COMMIT CREATE - ID: {}", solicitacaoId);
-                    transacaoAsyncService.createTransactionAsync(solicitacaoId);
+                    log.info("*** AFTER COMMIT CREATE - ID: {}", response.id());
+                    transacaoAsyncService.createTransactionAsync(response.id());
                 } catch (Exception e) {
-                    log.error("Erro no callback de criação de transação para solicitação ID: {}", solicitacaoId, e);
+                    log.error("Erro no callback de criação de transação para solicitação ID: {}", response.id(), e);
                 }
             }
         });
