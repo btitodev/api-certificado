@@ -18,7 +18,7 @@ import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertif
 import com.api.certificado.exception.SolicitacaoNaoEncontradaException;
 import com.api.certificado.menssaging.message.SolicitacaoBoletoMenssaging;
 import com.api.certificado.repository.SolicitacaoCertificadoRepository;
-import com.api.certificado.util.mapper.SolicitanteMapper;
+import com.api.certificado.util.mapper.SolicitacaoCertificadoMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -53,17 +53,11 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                                 cliente = solicitanteService.searchOrCreate(request.cliente());
                         }
 
-                        var solicitacao = createSolicitacao(request, requerente, cliente);
+                        var solicitacao = createSolicitacao(requerente, cliente);
 
                         repository.saveAndFlush(solicitacao);
 
-                        return new SolicitacaoCertificadoResponseDTO(
-                                        solicitacao.getId(),
-                                        solicitacao.getStatus(),
-                                        solicitacao.getDataSolicitacao(),
-                                        SolicitanteMapper.toResponseDto(solicitacao.getRequerente()),
-                                        SolicitanteMapper.toResponseDto(solicitacao.getCliente()),
-                                        solicitacao.getLinkBoleto());
+                         return SolicitacaoCertificadoMapper.toResponseDto(solicitacao);
 
                 } catch (Exception ex) {
                         throw new RuntimeException("Falha ao salvar a solicitação", ex);
@@ -80,18 +74,14 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                 getSelf().updateStatus(request.id(), StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
         }
 
-        private SolicitacaoCertificado createSolicitacao(
-                        SolicitacaoCertificadoRequestDTO request,
-                        Solicitante requerente,
-                        Solicitante cliente) {
+        private SolicitacaoCertificado createSolicitacao(Solicitante requerente, Solicitante cliente) {
 
                 var solicitacao = new SolicitacaoCertificado();
 
                 solicitacao.setDataSolicitacao(LocalDateTime.now());
                 solicitacao.setStatus(StatusSolicitacaoCertificado.SOLICITACAO_EMITIDA);
-
-                solicitacao.setRequerente(requerente);
-                solicitacao.setCliente(cliente);
+                solicitacao.setRequerente(requerente); 
+                solicitacao.setCliente(cliente);       
 
                 return solicitacao;
         }
@@ -120,19 +110,13 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                 }
         }
 
-                public SolicitacaoCertificadoResponseDTO getById(UUID id) {
+        public SolicitacaoCertificadoResponseDTO getById(UUID id) {
                 try {
                         var solicitacao = repository.findById(id)
                                         .orElseThrow(() -> new SolicitacaoNaoEncontradaException(
                                                         "Solicitação não encontrada"));
 
-                        return new SolicitacaoCertificadoResponseDTO(
-                                        solicitacao.getId(),
-                                        solicitacao.getStatus(),
-                                        solicitacao.getDataSolicitacao(),
-                                        SolicitanteMapper.toResponseDto(solicitacao.getRequerente()),
-                                        SolicitanteMapper.toResponseDto(solicitacao.getCliente()),
-                                        solicitacao.getLinkBoleto());
+                        return SolicitacaoCertificadoMapper.toResponseDto(solicitacao);
                 } catch (SolicitacaoNaoEncontradaException ex) {
                         throw ex;
                 } catch (Exception ex) {

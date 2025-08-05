@@ -3,6 +3,7 @@ package com.api.certificado.util.mapper;
 import java.time.LocalDateTime;
 
 import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoRequestDTO;
+import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
 
@@ -19,5 +20,27 @@ public class SolicitacaoCertificadoMapper {
         entity.setCliente(SolicitanteMapper.toEntity(dto.cliente()));
 
         return entity;
+    }
+
+    public static SolicitacaoCertificadoRequestDTO toRequestDto(SolicitacaoCertificado entity) {
+        if (entity == null) return null;
+
+        return new SolicitacaoCertificadoRequestDTO(
+                SolicitanteMapper.toRequestDto(entity.getRequerente()),
+                SolicitanteMapper.toRequestDto(entity.getCliente())
+        );
+    }
+
+    public static SolicitacaoCertificadoResponseDTO toResponseDto(SolicitacaoCertificado entity) {
+        if (entity == null) return null;
+
+        return new SolicitacaoCertificadoResponseDTO(
+                entity.getId(),
+                entity.getStatus(),
+                entity.getDataSolicitacao(),
+                SolicitanteMapper.toResponseDto(entity.getRequerente()),
+                SolicitanteMapper.toResponseDto(entity.getCliente()),
+                entity.getLinkBoleto()
+        );
     }
 }
