@@ -7,7 +7,9 @@ import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertif
 
 public record SolicitacaoCertificadoResponseDTO(
         UUID id,
+        StatusSolicitacaoCertificado status,
         LocalDateTime dataSolicitacao,
-        StatusSolicitacaoCertificado status) {
+        SolicitanteResponseDTO requerente,
+        SolicitanteResponseDTO cliente) {
 
 }

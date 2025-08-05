@@ -18,6 +18,7 @@ import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertif
 import com.api.certificado.exception.SolicitacaoNaoEncontradaException;
 import com.api.certificado.menssaging.message.SolicitacaoBoletoMenssaging;
 import com.api.certificado.repository.SolicitacaoCertificadoRepository;
+import com.api.certificado.util.mapper.SolicitanteMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -58,20 +59,25 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
 
                         return new SolicitacaoCertificadoResponseDTO(
                                         solicitacao.getId(),
+                                        solicitacao.getStatus(),
                                         solicitacao.getDataSolicitacao(),
-                                        solicitacao.getStatus());
+                                        SolicitanteMapper.toResponseDto(solicitacao.getRequerente()),
+                                        SolicitanteMapper.toResponseDto(solicitacao.getCliente()));
 
                 } catch (Exception ex) {
                         throw new RuntimeException("Falha ao salvar a solicitação", ex);
                 }
         }
 
-        public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoResponseDTO menssage) {
+        public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoResponseDTO request) {
                 var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
-                                menssage.id());
+                                request.id(),
+                                request.requerente(),
+                                request.cliente(),
+                                request.status());
 
                 sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
-                getSelf().updateStatus(menssage.id(), StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
+                getSelf().updateStatus(request.id(), StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
         }
 
         private SolicitacaoCertificado createSolicitacao(
@@ -81,11 +87,9 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
 
                 var solicitacao = new SolicitacaoCertificado();
 
-                // Dados básicos
                 solicitacao.setDataSolicitacao(LocalDateTime.now());
                 solicitacao.setStatus(StatusSolicitacaoCertificado.SOLICITACAO_EMITIDA);
 
-                // Relacionamentos
                 solicitacao.setRequerente(requerente);
                 solicitacao.setCliente(cliente);
 
@@ -116,7 +120,7 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                 }
         }
 
-        public SolicitacaoCertificadoResponseDTO getById(UUID id) {
+                public SolicitacaoCertificadoResponseDTO getById(UUID id) {
                 try {
                         var solicitacao = repository.findById(id)
                                         .orElseThrow(() -> new SolicitacaoNaoEncontradaException(
@@ -124,8 +128,10 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
 
                         return new SolicitacaoCertificadoResponseDTO(
                                         solicitacao.getId(),
+                                        solicitacao.getStatus(),
                                         solicitacao.getDataSolicitacao(),
-                                        solicitacao.getStatus());
+                                        SolicitanteMapper.toResponseDto(solicitacao.getRequerente()),
+                                        SolicitanteMapper.toResponseDto(solicitacao.getCliente()));
                 } catch (SolicitacaoNaoEncontradaException ex) {
                         throw ex;
                 } catch (Exception ex) {
