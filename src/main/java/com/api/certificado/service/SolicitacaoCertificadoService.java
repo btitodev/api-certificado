@@ -18,8 +18,6 @@ import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertif
 import com.api.certificado.exception.SolicitacaoNaoEncontradaException;
 import com.api.certificado.menssaging.message.SolicitacaoBoletoMenssaging;
 import com.api.certificado.repository.SolicitacaoCertificadoRepository;
-import com.api.certificado.repository.SolicitanteRepository;
-import com.api.certificado.util.mapper.SolicitacaoCertificadoMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -46,15 +44,15 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
         @Transactional
         public SolicitacaoCertificadoResponseDTO create(SolicitacaoCertificadoRequestDTO request) {
                 try {
-                        var requerente = solicitanteService.buscarOuCriarSolicitante(request.requerente());
+                        var requerente = solicitanteService.searchOrCreate(request.requerente());
 
                         var cliente = requerente;
 
-                        if (!solicitanteService.saoAMesmaPessoa(request.requerente(), request.cliente())) {
-                                cliente = solicitanteService.buscarOuCriarSolicitante(request.cliente());
+                        if (!solicitanteService.areTheSamePerosn(request.requerente(), request.cliente())) {
+                                cliente = solicitanteService.searchOrCreate(request.cliente());
                         }
 
-                        var solicitacao = criarSolicitacao(request, requerente, cliente);
+                        var solicitacao = createSolicitacao(request, requerente, cliente);
 
                         repository.saveAndFlush(solicitacao);
 
@@ -76,7 +74,7 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                 getSelf().updateStatus(menssage.id(), StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
         }
 
-        private SolicitacaoCertificado criarSolicitacao(
+        private SolicitacaoCertificado createSolicitacao(
                         SolicitacaoCertificadoRequestDTO request,
                         Solicitante requerente,
                         Solicitante cliente) {

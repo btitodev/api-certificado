@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitanteRequestDTO;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,6 +32,5 @@ public class Solicitante {
     private String email;
     private String documento;
     private String telefone;
-    private TipoSolicitante tipo;
     
 }

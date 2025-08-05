@@ -19,29 +19,20 @@ public class SolicitanteService {
 
     private final SolicitanteRepository repository;
 
-    /**
-     * Busca ou cria um solicitante baseado no CPF
-     */
+    
     @Transactional
-    public Solicitante buscarOuCriarSolicitante(SolicitanteRequestDTO dto) {
-        log.info("Buscando ou criando solicitante com CPF: {}", dto.documento());
-        
-        // 1. Tentar encontrar por CPF primeiro
+    public Solicitante searchOrCreate(SolicitanteRequestDTO dto) {
         Optional<Solicitante> solicitanteExistente = repository.findByDocumento(dto.documento());
 
         if (solicitanteExistente.isPresent()) {
             var solicitante = solicitanteExistente.get();
-            log.info("Solicitante encontrado: {}", solicitante.getId());
             
-            // 2. Atualizar dados se necessário
-            atualizarDadosSeNecessario(solicitante, dto);
+            update(solicitante, dto);
             
             return repository.saveAndFlush(solicitante);
         }
         
-        // 3. Criar novo solicitante se não existe
-        log.info("Criando novo solicitante para CPF: {}", dto.documento());
-        var novoSolicitante = criarNovoSolicitante(dto);
+        var novoSolicitante = createSolicitante(dto);
         
         return repository.saveAndFlush(novoSolicitante);
     }
@@ -49,7 +40,7 @@ public class SolicitanteService {
     /**
      * Atualiza dados do solicitante se houver mudanças
      */
-    private void atualizarDadosSeNecessario(Solicitante solicitante, SolicitanteRequestDTO dto) {
+    private void update(Solicitante solicitante, SolicitanteRequestDTO dto) {
         boolean foiAtualizado = false;
         
         // Atualizar nome se diferente
@@ -62,7 +53,7 @@ public class SolicitanteService {
         
         // Atualizar email se diferente
         if (!dto.email().equals(solicitante.getEmail())) {
-            log.info("Atualizando email do solicitante {} de '{}' para '{}'", 
+            log.info("Atualizando email do solicitante {} de '{}' para '{}'",
                     solicitante.getId(), solicitante.getEmail(), dto.email());
             solicitante.setEmail(dto.email());
             foiAtualizado = true;
@@ -70,34 +61,28 @@ public class SolicitanteService {
         
         // Atualizar telefone se fornecido e diferente
         if (dto.telefone() != null && !dto.telefone().equals(solicitante.getTelefone())) {
-            log.info("Atualizando telefone do solicitante {}", solicitante.getId());
             solicitante.setTelefone(dto.telefone());
             foiAtualizado = true;
-        }
-        
-        
-        if (foiAtualizado) {
-            log.info("Dados do solicitante {} foram atualizados", solicitante.getId());
         }
     }
 
     /**
      * Cria um novo solicitante
      */
-    private Solicitante criarNovoSolicitante(SolicitanteRequestDTO dto) {
+    private Solicitante createSolicitante(SolicitanteRequestDTO dto) {
         var solicitante = new Solicitante();
         solicitante.setNome(dto.nome());
         solicitante.setEmail(dto.email());
         solicitante.setTelefone(dto.telefone());
+        solicitante.setDocumento(dto.documento());
         
-        log.info("Novo solicitante criado com CPF: {}", dto.documento());
         return solicitante;
     }
 
     /**
      * Verifica se requerente e cliente são a mesma pessoa
      */
-    public boolean saoAMesmaPessoa(SolicitanteRequestDTO requerente, SolicitanteRequestDTO cliente) {
+    public boolean areTheSamePerosn(SolicitanteRequestDTO requerente, SolicitanteRequestDTO cliente) {
         return requerente.documento().equals(cliente.documento());
     }
 }

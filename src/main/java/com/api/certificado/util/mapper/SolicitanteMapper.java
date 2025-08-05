@@ -13,7 +13,6 @@ public class SolicitanteMapper {
         entity.setEmail(dto.email());
         entity.setDocumento(dto.documento());
         entity.setTelefone(dto.telefone());
-        entity.setTipo(dto.tipo());
 
         return entity;
     }
