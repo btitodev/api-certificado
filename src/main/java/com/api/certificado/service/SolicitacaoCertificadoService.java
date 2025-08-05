@@ -1,5 +1,6 @@
 package com.api.certificado.service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.BeansException;
@@ -8,14 +9,16 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoRequestDTO;
+import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.domain.MessagePublisher;
 import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
+import com.api.certificado.domain.solicitacaoCertificado.Solicitante;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
-import com.api.certificado.dto.SolicitacaoCertificadoRequestDTO;
-import com.api.certificado.dto.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.exception.SolicitacaoNaoEncontradaException;
-import com.api.certificado.menssaging.SolicitacaoBoletoMenssaging;
+import com.api.certificado.menssaging.message.SolicitacaoBoletoMenssaging;
 import com.api.certificado.repository.SolicitacaoCertificadoRepository;
+import com.api.certificado.util.mapper.SolicitacaoCertificadoMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class SolicitacaoCertificadoService implements ApplicationContextAware {
 
         private final SolicitacaoCertificadoRepository repository;
+        private final SolicitanteService solicitanteService;
         private final MessagePublisher<SolicitacaoBoletoMenssaging> sendMessagingBoleto;
 
         private ApplicationContext applicationContext;
@@ -39,24 +43,46 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
         }
 
         @Transactional
-        public UUID create(SolicitacaoCertificadoRequestDTO request) {
+        public SolicitacaoCertificadoResponseDTO create(SolicitacaoCertificadoRequestDTO request) {
                 try {
-                        var solicitacao = new SolicitacaoCertificado(request);
+                        var requerente = solicitanteService.searchOrCreate(request.requerente());
+
+                        var cliente = requerente;
+
+                        if (!solicitanteService.areTheSamePerosn(request.requerente(), request.cliente())) {
+                                cliente = solicitanteService.searchOrCreate(request.cliente());
+                        }
+
+                        var solicitacao = createSolicitacao(requerente, cliente);
+
                         repository.saveAndFlush(solicitacao);
-                        return solicitacao.getId();
+
+                         return SolicitacaoCertificadoMapper.toResponseDto(solicitacao);
+
                 } catch (Exception ex) {
                         throw new RuntimeException("Falha ao salvar a solicitação", ex);
                 }
         }
 
-        public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoResponseDTO menssage) {
+        public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoResponseDTO request) {
                 var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
-                                menssage.nome(),
-                                menssage.email(),
-                                menssage.id());
+                                request.id(),
+                                request.cliente());
 
                 sendMessagingBoleto.publish(menssagingSolicitacaoBoleto);
-                getSelf().updateStatus(menssage.id(), StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
+                getSelf().updateStatus(request.id(), StatusSolicitacaoCertificado.BOLETO_SOLICITADO);
+        }
+
+        private SolicitacaoCertificado createSolicitacao(Solicitante requerente, Solicitante cliente) {
+
+                var solicitacao = new SolicitacaoCertificado();
+
+                solicitacao.setDataSolicitacao(LocalDateTime.now());
+                solicitacao.setStatus(StatusSolicitacaoCertificado.SOLICITACAO_EMITIDA);
+                solicitacao.setRequerente(requerente); 
+                solicitacao.setCliente(cliente);       
+
+                return solicitacao;
         }
 
         @Transactional
@@ -83,17 +109,25 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                 }
         }
 
+        @Transactional
+        public void addBoletoLink(UUID id, String boletoUrl) {
+                try {
+                        var solicitacao = repository.findById(id)
+                                        .orElseThrow(() -> new EntityNotFoundException("Solicitação não encontrada"));
+                        solicitacao.setLinkBoleto(boletoUrl);
+                        repository.saveAndFlush(solicitacao);
+                } catch (Exception ex) {
+                        throw new RuntimeException("Erro ao adicionar link do boleto", ex);
+                }
+        }
+
         public SolicitacaoCertificadoResponseDTO getById(UUID id) {
                 try {
                         var solicitacao = repository.findById(id)
-                                        .orElseThrow(() -> new SolicitacaoNaoEncontradaException("Solicitação não encontrada"));
+                                        .orElseThrow(() -> new SolicitacaoNaoEncontradaException(
+                                                        "Solicitação não encontrada"));
 
-                        return new SolicitacaoCertificadoResponseDTO(
-                                        solicitacao.getId(),
-                                        solicitacao.getNome(),
-                                        solicitacao.getEmail(),
-                                        solicitacao.getDataSolicitacao(),
-                                        solicitacao.getStatus());
+                        return SolicitacaoCertificadoMapper.toResponseDto(solicitacao);
                 } catch (SolicitacaoNaoEncontradaException ex) {
                         throw ex;
                 } catch (Exception ex) {

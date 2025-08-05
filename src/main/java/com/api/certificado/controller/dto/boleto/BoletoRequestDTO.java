@@ -1,4 +1,4 @@
-package com.api.certificado.dto;
+package com.api.certificado.controller.dto.boleto;
 
 import java.util.UUID;
 

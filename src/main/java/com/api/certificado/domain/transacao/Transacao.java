@@ -3,9 +3,9 @@ package com.api.certificado.domain.transacao;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.api.certificado.controller.dto.transacao.TransacaoRequestDTO;
 import com.api.certificado.domain.solicitacaoCertificado.SolicitacaoCertificado;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
-import com.api.certificado.dto.TransacaoRequestDTO;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -58,12 +58,5 @@ public class Transacao {
         this.status = status;
         this.sucesso = sucesso;
         this.mensagem = mensagem;
-    }
-
-    public Transacao(TransacaoRequestDTO request) {
-        this.data = LocalDateTime.now();
-        this.status = request.status();
-        this.sucesso = request.sucesso();
-        this.mensagem = request.mensagem();
     }
 }

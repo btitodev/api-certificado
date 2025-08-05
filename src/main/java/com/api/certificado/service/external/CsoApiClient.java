@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.api.certificado.controller.dto.pedidoCompra.PedidoCompraRequestDTO;
+import com.api.certificado.controller.dto.pedidoCompra.PedidoCompraResponseDTO;
 import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertificado;
-import com.api.certificado.dto.PedidoCompraRequestDTO;
-import com.api.certificado.dto.PedidoCompraResponseDTO;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 
 import lombok.RequiredArgsConstructor;

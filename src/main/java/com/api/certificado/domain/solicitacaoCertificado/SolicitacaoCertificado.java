@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.api.certificado.domain.transacao.Transacao;
-import com.api.certificado.dto.SolicitacaoCertificadoRequestDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -15,6 +14,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -33,22 +34,23 @@ public class SolicitacaoCertificado {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    private String nome;
-    private String email;
     private LocalDateTime dataSolicitacao;
     private String ticket;
+    private Integer numeroBoleto;
+    private String linkBoleto;
+
+    @ManyToOne
+    @JoinColumn(name = "requerente_id")
+    private Solicitante requerente;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Solicitante cliente;
 
     @Enumerated(EnumType.STRING)
     private StatusSolicitacaoCertificado status;
 
     @OneToMany(mappedBy = "solicitacaoCertificado", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transacao> transacoes = new ArrayList<>();
-
-    public SolicitacaoCertificado(SolicitacaoCertificadoRequestDTO request) {
-        this.nome = request.nome();
-        this.email = request.email();
-        this.dataSolicitacao = LocalDateTime.now();
-        this.status = StatusSolicitacaoCertificado.SOLICITACAO_EMITIDA;
-    }
 
 }

@@ -6,9 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.api.certificado.controller.dto.transacao.TransacaoRequestDTO;
 import com.api.certificado.domain.transacao.Transacao;
-import com.api.certificado.dto.TransacaoRequestDTO;
 import com.api.certificado.repository.TransacaoRepository;
+import com.api.certificado.util.mapper.TransacaoMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ public class TransacaoService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UUID create(TransacaoRequestDTO request) {
         try {
-            Transacao novaTransacao = new Transacao(request);
+            Transacao novaTransacao = TransacaoMapper.toEntity(request);
 
             Transacao transacaoSalva = transacaoRepository.save(novaTransacao);
             return transacaoSalva.getId();

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.certificado.annotation.RequireApiKey;
-import com.api.certificado.dto.SolicitacaoCertificadoRequestDTO;
-import com.api.certificado.dto.SolicitacaoCertificadoResponseDTO;
+import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoRequestDTO;
+import com.api.certificado.controller.dto.solicitacaoCertificado.SolicitacaoCertificadoResponseDTO;
 import com.api.certificado.service.SolicitacaoCertificadoService;
 
 import jakarta.validation.Valid;
@@ -31,8 +31,7 @@ public class SolicitacaoCertificadoController {
     @PostMapping
     public ResponseEntity<SolicitacaoCertificadoResponseDTO> create(
             @RequestBody @Valid SolicitacaoCertificadoRequestDTO request) {
-        var id = service.create(request);
-        SolicitacaoCertificadoResponseDTO response = service.getById(id);
+        var response = service.create(request);
         service.sendMessagingSolicitacaoBoleto(response);
         URI location = URI.create("/solicitacao-certificado/" + response.id());
         return ResponseEntity.created(location).body(response);
@@ -41,8 +40,7 @@ public class SolicitacaoCertificadoController {
     @RequireApiKey
     @GetMapping("/{id}")
     public ResponseEntity<SolicitacaoCertificadoResponseDTO> getById(@PathVariable UUID id) {
-        SolicitacaoCertificadoResponseDTO response = service.getById(id);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(service.getById(id));
     }
 
 }
