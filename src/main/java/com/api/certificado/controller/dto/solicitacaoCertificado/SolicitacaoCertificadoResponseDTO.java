@@ -10,6 +10,7 @@ public record SolicitacaoCertificadoResponseDTO(
         StatusSolicitacaoCertificado status,
         LocalDateTime dataSolicitacao,
         SolicitanteResponseDTO requerente,
-        SolicitanteResponseDTO cliente) {
+        SolicitanteResponseDTO cliente,
+        String linkBoleto) {
 
 }

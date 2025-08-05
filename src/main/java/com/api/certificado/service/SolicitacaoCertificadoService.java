@@ -62,7 +62,8 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                                         solicitacao.getStatus(),
                                         solicitacao.getDataSolicitacao(),
                                         SolicitanteMapper.toResponseDto(solicitacao.getRequerente()),
-                                        SolicitanteMapper.toResponseDto(solicitacao.getCliente()));
+                                        SolicitanteMapper.toResponseDto(solicitacao.getCliente()),
+                                        solicitacao.getLinkBoleto());
 
                 } catch (Exception ex) {
                         throw new RuntimeException("Falha ao salvar a solicitação", ex);
@@ -72,7 +73,6 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
         public void sendMessagingSolicitacaoBoleto(SolicitacaoCertificadoResponseDTO request) {
                 var menssagingSolicitacaoBoleto = new SolicitacaoBoletoMenssaging(
                                 request.id(),
-                                request.requerente(),
                                 request.cliente(),
                                 request.status());
 
@@ -131,7 +131,8 @@ public class SolicitacaoCertificadoService implements ApplicationContextAware {
                                         solicitacao.getStatus(),
                                         solicitacao.getDataSolicitacao(),
                                         SolicitanteMapper.toResponseDto(solicitacao.getRequerente()),
-                                        SolicitanteMapper.toResponseDto(solicitacao.getCliente()));
+                                        SolicitanteMapper.toResponseDto(solicitacao.getCliente()),
+                                        solicitacao.getLinkBoleto());
                 } catch (SolicitacaoNaoEncontradaException ex) {
                         throw ex;
                 } catch (Exception ex) {

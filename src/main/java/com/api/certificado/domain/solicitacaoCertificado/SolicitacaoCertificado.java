@@ -37,6 +37,7 @@ public class SolicitacaoCertificado {
     private LocalDateTime dataSolicitacao;
     private String ticket;
     private Integer numeroBoleto;
+    private String linkBoleto;
 
     @ManyToOne
     @JoinColumn(name = "requerente_id")

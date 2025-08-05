@@ -7,7 +7,6 @@ import com.api.certificado.domain.solicitacaoCertificado.StatusSolicitacaoCertif
 
 public record SolicitacaoBoletoMenssaging(
         UUID idSolicitacao,
-        SolicitanteResponseDTO requerente,
         SolicitanteResponseDTO cliente,
         StatusSolicitacaoCertificado status
 ) {
